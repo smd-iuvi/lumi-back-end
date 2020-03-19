@@ -6,6 +6,8 @@ class VideoController {
   public async index (req: Request, res: Response): Promise<Response> {
     try {
       const videos = await Video.find()
+        .populate('genre')
+        .populate({ path: 'owner', select: 'firstName lastName photoUrl email' })
       return res.json(videos)
     } catch (error) {
       return res.json(error)
