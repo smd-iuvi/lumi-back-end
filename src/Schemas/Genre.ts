@@ -8,7 +8,7 @@ export interface GenreInterface extends Document {
 
 export const GenreSchema = new Schema({
   name: { type: String, required: true },
-  videos: [{ type: Schema.Types.ObjectId, ref: 'Video' }]
+  videos: [{ type: Schema.Types.ObjectId, ref: 'Videos' }]
 }, {
   timestamps: true
 })
