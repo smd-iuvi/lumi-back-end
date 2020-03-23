@@ -1,13 +1,15 @@
 import { Schema, model, Document } from 'mongoose'
 
 export interface CommentInterface extends Document {
-    userID: string,
-    videoID: string
+    userId: string,
+    videoId: string,
+    text: string
 }
 
 export const CommentSchema = new Schema({
-  userID: { type: Schema.Types.ObjectId, ref: 'User' },
-  videoID: { type: Schema.Types.ObjectId, ref: 'Video' }
+  userId: { type: Schema.Types.ObjectId, ref: 'User' },
+  videoId: { type: Schema.Types.ObjectId, ref: 'Video' },
+  text: { type: String, required: true }
 }, {
   timestamps: true
 })
