@@ -6,6 +6,7 @@ import GenreController from './Controllers/GenreController'
 
 import VideoRoutes from './Routes/VideosRoutes'
 import CourseRoutes from './Routes/CoursesRoutes'
+import EventsRoutes from './Routes/EventsRoutes'
 
 const routes = Router()
 
@@ -20,5 +21,6 @@ routes.post('/genres', GenreController.create)
 
 routes.use(VideoRoutes)
 routes.use(CourseRoutes)
+routes.use(EventsRoutes)
 
 export default routes
