@@ -1,6 +1,8 @@
 import { Request, Response } from 'express'
 
 import Course from '../Schemas/Course'
+import Video from '../Schemas/Video'
+import Event from '../Schemas/Event'
 
 class CourseController {
   public async index (req: Request, res: Response): Promise<Response> {
@@ -50,8 +52,8 @@ class CourseController {
 
   public async getVideos (req: Request, res: Response): Promise<Response> {
     try {
-      const course = await Course.findOne({ _id: req.params.id }).populate('videos')
-      return res.json(course.videos ?? [])
+      const videos = await Video.find({ course: req.params.id })
+      return res.json(videos)
     } catch (error) {
       return res.json(error)
     }
@@ -59,8 +61,8 @@ class CourseController {
 
   public async getEvents (req: Request, res: Response): Promise<Response> {
     try {
-      const course = await Course.findOne({ _id: req.params.id }).populate('events')
-      return res.json(course.events ?? [])
+      const events = await Event.find({ course: req.params.id })
+      return res.json(events)
     } catch (error) {
       return res.json(error)
     }
