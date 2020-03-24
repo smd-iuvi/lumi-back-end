@@ -1,6 +1,9 @@
 import { Request, Response } from 'express'
 
 import Event from '../Schemas/Event'
+import Video from '../Schemas/Video'
+import Course from '../Schemas/Course'
+import Teacher from '../Schemas/Teacher'
 
 class EventController {
   public async index (req: Request, res: Response): Promise<Response> {
@@ -50,8 +53,8 @@ class EventController {
 
   public async getVideos (req: Request, res: Response): Promise<Response> {
     try {
-      const event = await Event.findOne({ _id: req.params.id }).populate('videos')
-      return res.json(event.videos ?? [])
+      const videos = await Video.find({ event: req.params.id })
+      return res.json(videos)
     } catch (error) {
       return res.json(error)
     }
@@ -59,8 +62,11 @@ class EventController {
 
   public async deleteVideo (req: Request, res: Response): Promise<Response> {
     try {
-      const event = await Event.findOne({ _id: req.params.id })
-      await event.removeVideo(req.params.videoId)
+      const video = await Video.findOne({ _id: req.params.videoId })
+      video.event = null
+      await video.save()
+      const videos = await Video.find({ event: req.params.id })
+      return res.json(videos)
     } catch (error) {
       return res.json(error)
     }
@@ -68,9 +74,12 @@ class EventController {
 
   public async addVideo (req: Request, res: Response): Promise<Response> {
     try {
-      const event = await Event.findOne({ _id: req.params.id }).populate('videos')
-      await event.addVideo(req.params.videoId)
-      return res.json(event.videos ?? [])
+      const video = await Video.findOne({ _id: req.params.videoId })
+      const event = await Event.findById(req.params.id)
+      video.event = event
+      await video.save()
+      const videos = await Video.find({ event: req.params.id })
+      return res.json(videos)
     } catch (error) {
       return res.json(error)
     }
@@ -88,11 +97,10 @@ class EventController {
   public async updateCourse (req: Request, res: Response): Promise<Response> {
     try {
       const event = await Event.findOne({ _id: req.params.id }).populate('course')
-      await event.updateCourse(
-        req.params.coureId,
-        event
-      )
-      return res.json(event.course ?? [])
+      const course = await Course.findById(req.params.coureId)
+      event.course = course
+      await event.save()
+      return res.json(event.course)
     } catch (error) {
       return res.json(error)
     }
@@ -110,9 +118,10 @@ class EventController {
   public async updateTeacher (req: Request, res: Response): Promise<Response> {
     try {
       const event = await Event.findOne({ _id: req.params.id }).populate('teacher')
-      await event.updateTeacher(req.params.teacherId, event)
-
-      return res.json(event.teacher ?? [])
+      const teacher = await Teacher.findById(req.params.teacherId)
+      event.teacher = teacher
+      await event.save()
+      return res.json(event.teacher)
     } catch (error) {
       return res.json(error)
     }
