@@ -11,15 +11,6 @@ class UserController {
       return res.json(error)
     }
   }
-
-  public async create (req: Request, res: Response): Promise<Response> {
-    try {
-      const user = await User.create(req.body)
-      return res.json(user)
-    } catch (error) {
-      return res.json(error)
-    }
-  }
 }
 
 export default new UserController()
