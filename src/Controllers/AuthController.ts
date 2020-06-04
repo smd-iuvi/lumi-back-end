@@ -77,7 +77,9 @@ class AuthController {
     if (token == null) return res.sendStatus(401)
 
     try {
-      jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
+      const userJWT = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) as UserJWT
+      const user = await User.findOne({ authID: userJWT.authID })
+      req.headers.id = user.id
       next()
     } catch (error) {
       return res.sendStatus(403)
@@ -94,7 +96,6 @@ class AuthController {
       const user = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) as UserJWT
       const teacher = await Teacher.findOne({ authID: user.authID })
       req.headers.id = teacher.id
-      console.log(teacher)
       next()
     } catch (error) {
       console.log(error)
@@ -110,7 +111,8 @@ class AuthController {
 
     try {
       const user = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) as UserJWT
-      await Student.findOne({ authID: user.authID })
+      const student = await Student.findOne({ authID: user.authID })
+      req.headers.id = student.id
       next()
     } catch (error) {
       return res.sendStatus(403)

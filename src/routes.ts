@@ -8,6 +8,8 @@ import VideoRoutes from './Routes/VideosRoutes'
 import CourseRoutes from './Routes/CoursesRoutes'
 import EventsRoutes from './Routes/EventsRoutes'
 
+import TeacherRoutes from './Routes/TeacherRoutes'
+
 import AuthRoutes from './Routes/AuthRoutes'
 
 const routes = Router()
@@ -23,6 +25,7 @@ routes.post('/genres', GenreController.create)
 routes.use(VideoRoutes)
 routes.use(CourseRoutes)
 routes.use(EventsRoutes)
+routes.use(TeacherRoutes)
 
 routes.use(AuthRoutes)
 

@@ -20,7 +20,7 @@ class EventController {
       const event = await Event.create(req.body)
       return res.json(event)
     } catch (error) {
-      return res.json(error)
+      return res.sendStatus(400)
     }
   }
 

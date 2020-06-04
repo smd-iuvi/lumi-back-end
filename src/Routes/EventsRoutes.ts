@@ -6,7 +6,7 @@ import AuthController from '../Controllers/AuthController'
 const routes = Router()
 
 routes.get('/events', EventController.index)
-routes.post('/events', EventController.create)
+routes.post('/events', AuthController.validateTeacher, EventController.create)
 routes.put('/events', EventController.update)
 routes.delete('/events/:id', AuthController.validateTeacher, EventController.delete)
 

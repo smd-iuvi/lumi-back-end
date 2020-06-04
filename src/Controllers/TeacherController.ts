@@ -12,12 +12,15 @@ class TeacherController {
     }
   }
 
-  public async create (req: Request, res: Response): Promise<Response> {
+  public async update (req: Request, res: Response): Promise<Response> {
     try {
-      const teacher = await Teacher.create(req.body)
-      return res.json(teacher)
+      if (req.body.authID || req.body.id || req.body._id) {
+        return res.sendStatus(400)
+      }
+      await Teacher.findOneAndUpdate({ _id: req.headers.id }, req.body)
+      return res.sendStatus(200)
     } catch (error) {
-      return res.json(error)
+      return res.sendStatus(403)
     }
   }
 }
