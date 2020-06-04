@@ -1,13 +1,14 @@
 import { Router } from 'express'
 
 import EventController from '../Controllers/EventController'
+import AuthController from '../Controllers/AuthController'
 
 const routes = Router()
 
 routes.get('/events', EventController.index)
 routes.post('/events', EventController.create)
 routes.put('/events', EventController.update)
-routes.delete('/events', EventController.delete)
+routes.delete('/events/:id', AuthController.validateTeacher, EventController.delete)
 
 routes.get('/events/:id/videos', EventController.getVideos)
 routes.delete('/events/:id/videos/:videoId', EventController.deleteVideo)

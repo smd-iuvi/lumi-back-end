@@ -44,10 +44,18 @@ class EventController {
 
   public async delete (req: Request, res: Response): Promise<Response> {
     try {
-      const event = await Event.findOneAndDelete({ _id: req.params.id })
+      const teacher = await Teacher.findById(req.headers.id)
+      const event = await Event.findOne({ _id: req.params.id })
+
+      if (event.teacher.id !== teacher.id) {
+        return res.sendStatus(403)
+      } else {
+        await Event.findOneAndDelete({ _id: req.params.id })
+      }
+
       return res.json(event)
     } catch (error) {
-      return res.json(error)
+      return res.sendStatus(404)
     }
   }
 
