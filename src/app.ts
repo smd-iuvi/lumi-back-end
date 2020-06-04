@@ -1,6 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import mongoose from 'mongoose'
+import * as dotenv from 'dotenv'
 
 import routes from './routes'
 
@@ -9,6 +10,8 @@ class App {
 
     public constructor () {
       this.express = express()
+
+      dotenv.config()
 
       this.middlewares()
       this.database()
