@@ -9,6 +9,7 @@ import CourseRoutes from './Routes/CoursesRoutes'
 import EventsRoutes from './Routes/EventsRoutes'
 
 import TeacherRoutes from './Routes/TeacherRoutes'
+import StudentRoutes from './Routes/StudentsRoutes'
 
 import AuthRoutes from './Routes/AuthRoutes'
 
@@ -17,7 +18,6 @@ const routes = Router()
 routes.get('/users', UserController.index)
 
 routes.get('/students', StudentController.index)
-routes.post('/students', StudentController.create)
 
 routes.get('/genres', GenreController.index)
 routes.post('/genres', GenreController.create)
@@ -26,6 +26,7 @@ routes.use(VideoRoutes)
 routes.use(CourseRoutes)
 routes.use(EventsRoutes)
 routes.use(TeacherRoutes)
+routes.use(StudentRoutes)
 
 routes.use(AuthRoutes)
 

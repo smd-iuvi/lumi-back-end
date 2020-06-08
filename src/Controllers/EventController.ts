@@ -67,7 +67,7 @@ class EventController {
       const teacher = await Teacher.findById(req.headers.id)
       const event = await Event.findOne({ _id: req.params.id })
 
-      if (event.teacher.id !== teacher.id) {
+      if (event.teacher.toString() !== teacher.id.toString()) {
         return res.sendStatus(403)
       } else {
         await Event.findOneAndDelete({ _id: req.params.id })

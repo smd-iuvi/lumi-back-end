@@ -12,12 +12,16 @@ class StudentController {
     }
   }
 
-  public async create (req: Request, res: Response): Promise<Response> {
+  public async update (req: Request, res: Response): Promise<Response> {
     try {
-      const student = await Student.create(req.body)
-      return res.json(student)
+      if (req.body.authID || req.body.id || req.body._id || req.body.authID === '' || req.body.id === '' || req.body._id === '') {
+        return res.sendStatus(400)
+      }
+
+      await Student.findOneAndUpdate({ _id: req.headers.id }, req.body)
+      return res.sendStatus(200)
     } catch (error) {
-      return res.json(error)
+      return res.sendStatus(403)
     }
   }
 }

@@ -17,6 +17,7 @@ class TeacherController {
       if (req.body.authID || req.body.id || req.body._id) {
         return res.sendStatus(400)
       }
+
       await Teacher.findOneAndUpdate({ _id: req.headers.id }, req.body)
       return res.sendStatus(200)
     } catch (error) {

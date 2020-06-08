@@ -5,7 +5,7 @@ import AuthController from '../Controllers/AuthController'
 
 const routes = Router()
 
-routes.put('/teachers', AuthController.validateTeacher, TeacherController.update)
+routes.put('/teachers/me', AuthController.validateTeacher, TeacherController.update)
 
 routes.get('/teachers', TeacherController.index)
 
