@@ -40,6 +40,10 @@ class VideoController {
 
   public async update (req: Request, res: Response): Promise<Response> {
     try {
+      if (req.body.owner || req.body.id || req.body._id || req.body.comments) {
+        return res.sendStatus(400)
+      }
+
       if (req.headers.role === Roles.teacher) {
         const teacher = await Teacher.findById(req.headers.id)
         const video = await Video.findOne({ _id: req.params.id })
