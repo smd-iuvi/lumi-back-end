@@ -138,6 +138,24 @@ class AuthController {
     try {
       const user = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) as UserJWT
       const student = await Student.findOne({ authID: user.authID })
+      req.headers.id = student.id
+      req.headers.role = Roles.student
+      next()
+    } catch (error) {
+      console.log(error)
+      return res.sendStatus(403)
+    }
+  }
+
+  public async validateStudentTeacher (req: Request, res: Response, next: Function): Promise<Response> {
+    const authHeader = req.headers.authorization
+    const token = authHeader && authHeader.split(' ')[1]
+
+    if (token == null) return res.sendStatus(401)
+
+    try {
+      const user = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) as UserJWT
+      const student = await Student.findOne({ authID: user.authID })
 
       if (student == null) {
         const teacher = await Teacher.findOne({ authID: user.authID })

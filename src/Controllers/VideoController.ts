@@ -20,8 +20,10 @@ class VideoController {
 
   public async create (req: Request, res: Response): Promise<Response> {
     try {
+      if (req.body.owner !== req.headers.id) {
+        return res.sendStatus(400)
+      }
       const video = await Video.create(req.body)
-
       return res.json(video)
     } catch (error) {
       return res.json(error)
@@ -72,8 +74,27 @@ class VideoController {
 
   public async delete (req: Request, res: Response): Promise<Response> {
     try {
-      const video = await Video.findOneAndDelete({ _id: req.params.id })
-      return res.json(video)
+      if (req.headers.role === Roles.teacher) {
+        const teacher = await Teacher.findById(req.headers.id)
+        const video = await Video.findOne({ _id: req.params.id })
+
+        if (video.owner.toString() !== teacher.id.toString()) {
+          return res.sendStatus(403)
+        } else {
+          const video = await Video.findByIdAndDelete(req.params.id)
+          return res.json(video)
+        }
+      } else if (req.headers.role === Roles.student) {
+        const student = await Student.findById(req.headers.id)
+        const video = await Video.findOne({ _id: req.params.id })
+
+        if (video.owner.toString() !== student.id.toString()) {
+          return res.sendStatus(403)
+        } else {
+          const video = await Video.findByIdAndDelete(req.params.id)
+          return res.json(video)
+        }
+      }
     } catch (error) {
       return res.json(error)
     }
