@@ -21,7 +21,7 @@ export const UserSchema = new Schema({
   firstName: { type: String, required: [true, UserErrorsMessages.firstNameRequired] },
   lastName: { type: String, required: [true, UserErrorsMessages.lastNameRequired] },
   photoUrl: { type: String, required: false },
-  authID: { type: String, required: [true, UserErrorsMessages.authIDRequired] }
+  authID: { type: String, required: [true, UserErrorsMessages.authIDRequired], unique: true }
 }, {
   timestamps: true
 })

@@ -10,26 +10,9 @@ interface UserJWT {
 }
 
 class AuthController {
-  public async login (req: Request, res: Response): Promise<Response> {
-    try {
-      const user = await User.findOne({ authID: req.body.authID })
-      //   user.authID = null
-
-      console.log(user)
-
-      const userJWT = { authID: user.authID }
-      const accessToken = jwt.sign(userJWT, process.env.ACCESS_TOKEN_SECRET)
-      user.authID = null
-      res.json({ user, accessToken })
-    } catch (error) {
-      res.statusCode = 404
-      console.log(error)
-      return res.json(error)
-    }
-  }
-
   public async teacherLogin (req: Request, res: Response): Promise<Response> {
     try {
+      req.body.email = req.body.email.toLowerCase()
       const user = await Teacher.findOne({ authID: req.body.authID })
       const userJWT = { authID: user.authID }
       const accessToken = jwt.sign(userJWT, process.env.ACCESS_TOKEN_SECRET)
@@ -43,26 +26,65 @@ class AuthController {
 
   public async teacherRegister (req: Request, res: Response): Promise<Response> {
     try {
-      const user = await Teacher.create(req.body)
-      const userJWT = { authID: user.authID }
-      const accessToken = jwt.sign(userJWT, process.env.ACCESS_TOKEN_SECRET)
-      user.authID = null
-      return res.json({ user, accessToken })
+      req.body.email = req.body.email.toLowerCase()
+
+      const student = await Student.findOne({ authID: req.body.authID })
+      const studentEmail = await Student.findOne({ email: req.body.email })
+      const user = await User.findOne({ authID: req.body.authID })
+      const userEmail = await User.findOne({ email: req.body.email })
+
+      if (user == null && student == null && studentEmail == null && userEmail == null) {
+        const user = await Teacher.create(req.body)
+        const userJWT = { authID: user.authID }
+        const accessToken = jwt.sign(userJWT, process.env.ACCESS_TOKEN_SECRET)
+        user.authID = null
+        return res.json({ user, accessToken })
+      } else {
+        throw Error('Auth ID must be unique')
+      }
     } catch (error) {
-      console.log(error)
       res.statusCode = 400
       return res.json(error)
     }
   }
 
-  public async register (req: Request, res: Response): Promise<Response> {
+  public async studentLogin (req: Request, res: Response): Promise<Response> {
     try {
-      const user = await User.create(req.body)
-      user.authID = null
+      req.body.email = req.body.email.toLowerCase()
+      const user = await Student.findOne({ authID: req.body.authID })
+      console.log(user)
+      if (user.email === req.body.email) {
+        const userJWT = { authID: user.authID }
+        const accessToken = jwt.sign(userJWT, process.env.ACCESS_TOKEN_SECRET)
+        user.authID = null
+        res.json({ user, accessToken })
+      } else {
+        return res.sendStatus(403)
+      }
+    } catch (error) {
+      res.statusCode = 404
+      return res.json(error)
+    }
+  }
 
-      const userJWT = { authID: user.authID }
-      const accessToken = jwt.sign(userJWT, process.env.ACCESS_TOKEN_SECRET)
-      return res.json({ user, accessToken })
+  public async studentRegister (req: Request, res: Response): Promise<Response> {
+    try {
+      req.body.email = req.body.email.toLowerCase()
+
+      const teacher = await Teacher.findOne({ authID: req.body.authID })
+      const teacherEmail = await Teacher.findOne({ email: req.body.email })
+      const user = await User.findOne({ authID: req.body.authID })
+      const userEmail = await User.findOne({ email: req.body.email })
+
+      if (user == null && teacher == null && teacherEmail == null && userEmail == null) {
+        const user = await Student.create(req.body)
+        const userJWT = { authID: user.authID }
+        const accessToken = jwt.sign(userJWT, process.env.ACCESS_TOKEN_SECRET)
+        user.authID = null
+        return res.json({ user, accessToken })
+      } else {
+        throw Error('Auth ID must be unique')
+      }
     } catch (error) {
       console.log(error)
       res.statusCode = 400
