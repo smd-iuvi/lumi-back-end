@@ -68,7 +68,8 @@ class VideoController {
         }
       }
     } catch (error) {
-      return res.json(error)
+      res.statusCode = 404
+      return res.json({ error })
     }
   }
 
@@ -81,8 +82,8 @@ class VideoController {
         if (video.owner.toString() !== teacher.id.toString()) {
           return res.sendStatus(403)
         } else {
-          const video = await Video.findByIdAndDelete(req.params.id)
-          return res.json(video)
+          await Video.findByIdAndDelete(req.params.id)
+          return res.sendStatus(200)
         }
       } else if (req.headers.role === Roles.student) {
         const student = await Student.findById(req.headers.id)
@@ -91,12 +92,13 @@ class VideoController {
         if (video.owner.toString() !== student.id.toString()) {
           return res.sendStatus(403)
         } else {
-          const video = await Video.findByIdAndDelete(req.params.id)
-          return res.json(video)
+          await Video.findByIdAndDelete(req.params.id)
+          return res.sendStatus(200)
         }
       }
     } catch (error) {
-      return res.json(error)
+      res.statusCode = 404
+      return res.json({ error })
     }
   }
 
