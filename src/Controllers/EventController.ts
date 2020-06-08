@@ -5,6 +5,8 @@ import Video from '../Schemas/Video'
 import Course from '../Schemas/Course'
 import Teacher from '../Schemas/Teacher'
 
+import Roles from '../roles'
+
 class EventController {
   public async index (req: Request, res: Response): Promise<Response> {
     try {
@@ -35,8 +37,17 @@ class EventController {
 
   public async update (req: Request, res: Response): Promise<Response> {
     try {
-      const event = await Event.findOneAndUpdate({ _id: req.params.id }, req.body)
-      return res.json(event)
+      if (req.headers.role === Roles.teacher) {
+        const teacher = await Teacher.findById(req.headers.id)
+        const event = await Event.findOne({ _id: req.params.id })
+
+        if (event.teacher.id !== teacher.id) {
+          return res.sendStatus(403)
+        } else {
+          const event = await Event.findByIdAndUpdate(req.params.id, req.body)
+          return res.json(event)
+        }
+      }
     } catch (error) {
       return res.json(error)
     }

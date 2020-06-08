@@ -1,6 +1,7 @@
 import { Router } from 'express'
 
 import VideoController from '../Controllers/VideoController'
+import AuthController from '../Controllers/AuthController'
 
 const routes = Router()
 
@@ -8,8 +9,7 @@ routes.get('/videos', VideoController.index)
 routes.post('/videos', VideoController.create)
 
 routes.get('/videos/:id', VideoController.getById)
-routes.put('/videos/:id', VideoController.update)
-routes.patch('/videos/:id')
+routes.put('/videos/:id', AuthController.validateStudent, VideoController.update)
 routes.delete('/videos/:id', VideoController.delete)
 
 routes.get('/videos/:id/course', VideoController.getCourse)
@@ -25,7 +25,7 @@ routes.get('/videos/:id/tags', VideoController.getTags)
 // routes.delete('/videos/:id/tags/:tagId')
 
 routes.get('/videos/:id/comments', VideoController.getComments)
-routes.post('/videos/:id/comments', VideoController.pushComment)
+// routes.post('/videos/:id/comments', VideoController.pushComment)
 routes.patch('/videos/:id/comments/:commentId')
 routes.delete('/videos/:id/comments/:commentId')
 

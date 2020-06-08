@@ -5,6 +5,8 @@ import User from '../Schemas/User'
 import Teacher from '../Schemas/Teacher'
 import Student from '../Schemas/Student'
 
+import Roles from '../roles'
+
 interface UserJWT {
     authID: string
 }
@@ -102,6 +104,7 @@ class AuthController {
       const userJWT = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) as UserJWT
       const user = await User.findOne({ authID: userJWT.authID })
       req.headers.id = user.id
+      req.headers.role = Roles.user
       next()
     } catch (error) {
       return res.sendStatus(403)
@@ -118,6 +121,7 @@ class AuthController {
       const user = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) as UserJWT
       const teacher = await Teacher.findOne({ authID: user.authID })
       req.headers.id = teacher.id
+      req.headers.role = Roles.teacher
       next()
     } catch (error) {
       console.log(error)
@@ -134,7 +138,16 @@ class AuthController {
     try {
       const user = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) as UserJWT
       const student = await Student.findOne({ authID: user.authID })
-      req.headers.id = student.id
+
+      if (student == null) {
+        const teacher = await Teacher.findOne({ authID: user.authID })
+        req.headers.id = teacher.id
+        req.headers.role = Roles.teacher
+      } else {
+        req.headers.id = student.id
+        req.headers.role = Roles.student
+      }
+
       next()
     } catch (error) {
       return res.sendStatus(403)

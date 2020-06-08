@@ -25,7 +25,7 @@ export interface VideoInterface extends Document {
 }
 
 export const VideoSchema = new Schema({
-  owner: { type: Schema.Types.ObjectId, ref: 'Student' },
+  owner: { type: Schema.Types.ObjectId, ref: 'Student', required: true },
   title: { type: String, required: true },
   description: { type: String, required: true },
   duration: { type: Number, required: true },
