@@ -11,6 +11,8 @@ import EventsRoutes from './Routes/EventsRoutes'
 import TeacherRoutes from './Routes/TeacherRoutes'
 import StudentRoutes from './Routes/StudentsRoutes'
 
+import SemesterRoutes from './Routes/SemesterRoutes'
+
 import AuthRoutes from './Routes/AuthRoutes'
 
 const routes = Router()
@@ -27,6 +29,7 @@ routes.use(CourseRoutes)
 routes.use(EventsRoutes)
 routes.use(TeacherRoutes)
 routes.use(StudentRoutes)
+routes.use(SemesterRoutes)
 
 routes.use(AuthRoutes)
 
