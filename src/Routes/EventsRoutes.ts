@@ -10,6 +10,8 @@ routes.post('/events', AuthController.validateTeacher, EventController.create)
 routes.put('/events/:id', AuthController.validateTeacher, EventController.update)
 routes.delete('/events/:id', AuthController.validateTeacher, EventController.delete)
 
+routes.get('/events/:id', EventController.getById)
+
 routes.get('/events/:id/videos', EventController.getVideos)
 routes.delete('/events/:id/videos/:videoId', EventController.deleteVideo)
 routes.post('/events/:id/videos/:videoId', EventController.addVideo)
