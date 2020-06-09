@@ -12,6 +12,17 @@ class StudentController {
     }
   }
 
+  public async getById (req: Request, res: Response): Promise<Response> {
+    try {
+      const student = await Student.findById(req.params.id)
+      student.authID = null
+      student.registrationNumber = null
+      return res.json(student)
+    } catch (error) {
+      return res.json(error)
+    }
+  }
+
   public async update (req: Request, res: Response): Promise<Response> {
     try {
       if (req.body.authID || req.body.id || req.body._id || req.body.authID === '' || req.body.id === '' || req.body._id === '') {
