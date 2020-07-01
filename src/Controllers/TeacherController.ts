@@ -6,7 +6,12 @@ class TeacherController {
   public async index (req: Request, res: Response): Promise<Response> {
     try {
       const teachers = await Teacher.find()
-      return res.json(teachers)
+
+      return res.json(teachers.map((teacher) => {
+        teacher.siape = null
+        teacher.authID = null
+        return teacher
+      }))
     } catch (error) {
       return res.json(error)
     }
