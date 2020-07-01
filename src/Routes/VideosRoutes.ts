@@ -24,6 +24,8 @@ routes.delete('/videos/:id', AuthController.validateStudentTeacher, VideoControl
 // routes.post('/videos/:id/tags')
 // routes.delete('/videos/:id/tags/:tagId')
 
+routes.post('/videos/:id/favorite', AuthController.validateUser, VideoController.favoriteToggle)
+
 routes.get('/videos/:id/comments', VideoController.getComments)
 routes.post('/videos/:id/comments', AuthController.validateUser, VideoController.pushComment)
 routes.patch('/videos/:id/comments/:commentId')
