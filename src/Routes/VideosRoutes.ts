@@ -25,7 +25,7 @@ routes.delete('/videos/:id', AuthController.validateStudentTeacher, VideoControl
 // routes.delete('/videos/:id/tags/:tagId')
 
 routes.get('/videos/:id/comments', VideoController.getComments)
-// routes.post('/videos/:id/comments', VideoController.pushComment)
+routes.post('/videos/:id/comments', AuthController.validateUser, VideoController.pushComment)
 routes.patch('/videos/:id/comments/:commentId')
 routes.delete('/videos/:id/comments/:commentId')
 

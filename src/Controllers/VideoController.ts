@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 
 import Video from '../Schemas/Video'
+import Comment from '../Schemas/Comment'
 
 import Roles from '../roles'
 import Teacher from '../Schemas/Teacher'
@@ -140,8 +141,36 @@ class VideoController {
 
   public async getComments (req: Request, res: Response): Promise<Response> {
     try {
-      const video = await Video.findOne({ _id: req.params.id }).populate('comments')
-      return res.json(video.comments)
+      const comments = await Comment.find({ videoId: req.params.id })
+      return res.json(comments)
+    } catch (error) {
+      return res.json(error)
+    }
+  }
+
+  public async pushComment (req: Request, res: Response): Promise<Response> {
+    try {
+      const video = await Video.findOne({ _id: req.params.id })
+
+      if (video == null) {
+        return res.sendStatus(404)
+      }
+
+      if (req.headers.id == null) {
+        return res.sendStatus(403)
+      }
+
+      const comment = await Comment.create({
+        userId: req.headers.id,
+        videoId: req.params.id,
+        text: req.body.text
+      })
+
+      await video.comments.push(comment)
+
+      await video.save
+
+      return res.json(comment)
     } catch (error) {
       return res.json(error)
     }
