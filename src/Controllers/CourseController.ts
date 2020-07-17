@@ -14,6 +14,15 @@ class CourseController {
     }
   }
 
+  public async getCourse (req: Request, res: Response): Promise<Response> {
+    try {
+      const courses = await Course.findById(req.params.id)
+      return res.json(courses)
+    } catch (error) {
+      return res.json(error)
+    }
+  }
+
   public async create (req: Request, res: Response): Promise<Response> {
     try {
       const course = await Course.create(req.body)

@@ -1,5 +1,6 @@
 import { Schema, model, Document } from 'mongoose'
 import uniqueValidator from 'mongoose-unique-validator'
+import { VideoInterface } from './Video'
 
 export const UserErrorsMessages = {
   emailRequired: 'Email is required',
@@ -14,6 +15,7 @@ export interface UserInterface extends Document {
     lastName: string,
     photoUrl?: string,
     authID: string,
+    favorites?: Array<VideoInterface>
 }
 
 export const UserSchema = new Schema({
@@ -21,7 +23,8 @@ export const UserSchema = new Schema({
   firstName: { type: String, required: [true, UserErrorsMessages.firstNameRequired] },
   lastName: { type: String, required: [true, UserErrorsMessages.lastNameRequired] },
   photoUrl: { type: String, required: false },
-  authID: { type: String, required: [true, UserErrorsMessages.authIDRequired], unique: true }
+  authID: { type: String, required: [true, UserErrorsMessages.authIDRequired], unique: true },
+  favorites: [{ type: Schema.Types.ObjectId, ref: 'Video', required: false }]
 }, {
   timestamps: true
 })

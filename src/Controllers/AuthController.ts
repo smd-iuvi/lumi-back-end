@@ -102,9 +102,26 @@ class AuthController {
 
     try {
       const userJWT = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) as UserJWT
-      const user = await User.findOne({ authID: userJWT.authID })
-      req.headers.id = user.id
-      req.headers.role = Roles.user
+      const student = await Student.findOne({ authID: userJWT.authID })
+
+      if (student != null) {
+        req.headers.id = student.id
+        req.headers.role = Roles.student
+      } else {
+        const teacher = await Teacher.findOne({ authID: userJWT.authID })
+
+        if (teacher != null) {
+          req.headers.id = teacher.id
+          req.headers.role = Roles.teacher
+        } else {
+          const user = await User.findOne({ authID: userJWT.authID })
+
+          if (user != null) {
+            req.headers.id = user.id
+            req.headers.role = Roles.user
+          }
+        }
+      }
       next()
     } catch (error) {
       return res.sendStatus(403)

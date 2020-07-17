@@ -84,7 +84,8 @@ class EventController {
       const videos = await Video.find({ event: req.params.id })
       return res.json(videos)
     } catch (error) {
-      return res.json(error)
+      res.statusCode = 404
+      return res.json({ error })
     }
   }
 

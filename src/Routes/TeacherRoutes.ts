@@ -9,6 +9,8 @@ routes.put('/teachers/me', AuthController.validateTeacher, TeacherController.upd
 
 routes.get('/teachers', TeacherController.index)
 
+routes.get('/teachers/:id', TeacherController.getById)
+
 // routes.post('/auth/signOut')
 
 export default routes
