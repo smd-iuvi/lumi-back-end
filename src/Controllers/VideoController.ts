@@ -3,6 +3,7 @@ import { Request, Response } from 'express'
 import Video from '../Schemas/Video'
 import Comment from '../Schemas/Comment'
 
+import Applause from '../Schemas/Applause'
 import Roles from '../roles'
 import Teacher from '../Schemas/Teacher'
 import Student from '../Schemas/Student'
@@ -23,6 +24,7 @@ class VideoController {
         const videos = await Video.find()
           .populate('genre')
           .populate({ path: 'owner', select: 'firstName lastName photoUrl email' })
+
         return res.json(videos)
       }
     } catch (error) {
@@ -247,6 +249,38 @@ class VideoController {
         await user.save()
         return res.json(user.favorites)
       }
+    } catch (error) {
+      return res.json(error)
+    }
+  }
+
+  public async pushApplauses (req: Request, res: Response): Promise<Response> {
+    try {
+      if (req.headers.id == null) {
+        return res.sendStatus(403)
+      }
+
+      const video = await Video.findOne({ _id: req.params.id })
+
+      if (video == null) {
+        return res.sendStatus(404)
+      }
+
+      const applause = await Applause.findOne({ videoID: req.params.id, userID: req.headers.id })
+
+      if (applause == null) {
+        const applause = await Applause.create({
+          userID: req.headers.id,
+          videoID: video.id,
+          count: req.body.count
+        })
+
+        return res.json(applause)
+      } else {
+        applause.count = req.body.count < 50 ? req.body.count : 50
+      }
+
+      return res.json(applause)
     } catch (error) {
       return res.json(error)
     }
