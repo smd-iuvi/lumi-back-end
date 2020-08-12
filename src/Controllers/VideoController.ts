@@ -11,10 +11,20 @@ import User from '../Schemas/User'
 class VideoController {
   public async index (req: Request, res: Response): Promise<Response> {
     try {
-      const videos = await Video.find()
-        .populate('genre')
-        .populate({ path: 'owner', select: 'firstName lastName photoUrl email' })
-      return res.json(videos)
+      if (req.query.title) {
+        const videos = await Video.find()
+          .populate('genre')
+          .populate({ path: 'owner', select: 'firstName lastName photoUrl email' })
+        const filteredVideos = videos.filter(video => {
+          return video.title.toLowerCase().includes(req.query.title)
+        })
+        return res.json(filteredVideos)
+      } else {
+        const videos = await Video.find()
+          .populate('genre')
+          .populate({ path: 'owner', select: 'firstName lastName photoUrl email' })
+        return res.json(videos)
+      }
     } catch (error) {
       return res.json(error)
     }
