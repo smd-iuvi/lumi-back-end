@@ -277,8 +277,10 @@ class VideoController {
 
         return res.json(applause)
       } else {
-        applause.count = req.body.count < 50 ? req.body.count : 50
+        applause.count += req.body.count < 50 ? req.body.count : 50
       }
+
+      await applause.save()
 
       return res.json(applause)
     } catch (error) {
@@ -295,10 +297,15 @@ class VideoController {
       }
 
       const applauses = await Applause.find({ videoID: req.params.id })
+      const countObject = {
+        count: 0
+      }
 
-      const count = applauses.reduce((previous, applause) => { previous + applause.count }, 0)
+      applauses.forEach(applause => {
+        countObject.count += applause.count
+      })
 
-      return res.json(count)
+      return res.json(countObject)
     } catch (error) {
       return res.json(error)
     }
