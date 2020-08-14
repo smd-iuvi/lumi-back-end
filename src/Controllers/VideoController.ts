@@ -285,6 +285,24 @@ class VideoController {
       return res.json(error)
     }
   }
+
+  public async getApplauses (req: Request, res: Response): Promise<Response> {
+    try {
+      const video = await Video.findOne({ _id: req.params.id })
+
+      if (video == null) {
+        return res.sendStatus(404)
+      }
+
+      const applauses = await Applause.find({ videoID: req.params.id })
+
+      const count = applauses.reduce((previous, applause) => { previous + applause.count }, 0)
+
+      return res.json(count)
+    } catch (error) {
+      return res.json(error)
+    }
+  }
 }
 
 export default new VideoController()
