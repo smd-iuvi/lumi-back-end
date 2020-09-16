@@ -137,7 +137,9 @@ class EventController {
 
   public async getTeacher (req: Request, res: Response): Promise<Response> {
     try {
-      const event = await Event.findOne({ _id: req.params.id }).populate('teacher')
+      const event = await (await Event.findOne({ _id: req.params.id }).populate('teacher')).toObject()
+      delete event.teacher.authID
+      delete event.teacher.favorites
       return res.json(event.teacher ?? [])
     } catch (error) {
       return res.json(error)
