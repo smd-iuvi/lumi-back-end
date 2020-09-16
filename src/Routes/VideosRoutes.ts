@@ -31,10 +31,7 @@ routes.post('/videos/:id/comments', AuthController.validateUser, VideoController
 routes.patch('/videos/:id/comments/:commentId')
 routes.delete('/videos/:id/comments/:commentId')
 
-<<<<<<< HEAD
-=======
 routes.post('/videos/:id/applauses', AuthController.validateUser, VideoController.pushApplauses)
 routes.get('/videos/:id/applauses', VideoController.getApplauses)
 
->>>>>>> routes/lumi-back-end#10
 export default routes
