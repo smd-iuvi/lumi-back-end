@@ -39,10 +39,8 @@ class EventController {
   }
 
   public async update (req: Request, res: Response): Promise<Response> {
-    console.log(req.body.teacher)
-
     try {
-      if (req.body.teacher || req.body.id || req.body._id) {
+      if (req.body.teacher || req.body.id || req.body._id || req.body.teacher === '' || req.body.id === '' || req.body._id === '') {
         return res.sendStatus(400)
       }
 
