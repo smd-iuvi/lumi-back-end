@@ -52,7 +52,6 @@ class EventController {
           return res.sendStatus(403)
         } else {
           const newEvent = await Event.findByIdAndUpdate(req.params.id, req.body)
-          console.log(newEvent)
           return res.json(newEvent)
         }
       } else {
