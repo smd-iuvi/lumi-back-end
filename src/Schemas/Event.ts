@@ -6,7 +6,7 @@ import { TeacherInterface } from './Teacher'
 export interface EventInterface extends Document {
     name: string,
     description?: string,
-    date: Date,
+    date: string,
     course: CourseInterface,
     teacher: TeacherInterface,
 }
