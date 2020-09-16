@@ -6,16 +6,16 @@ import { TeacherInterface } from './Teacher'
 export interface EventInterface extends Document {
     name: string,
     description?: string,
-    date: Date,
+    date: string,
     course: CourseInterface,
     teacher: TeacherInterface,
 }
 
 export const EventSchema = new Schema({
   name: { type: String, required: true },
-  description: String,
-  date: { type: Schema.Types.Date, required: true },
-  course: { type: Schema.Types.ObjectId, ref: 'Event' },
+  description: { type: String },
+  date: { type: String, required: true },
+  course: { type: Schema.Types.ObjectId, ref: 'Course' },
   teacher: { type: Schema.Types.ObjectId, ref: 'Teacher', required: true }
 },
 {

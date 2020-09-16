@@ -20,7 +20,7 @@ class EventController {
   public async create (req: Request, res: Response): Promise<Response> {
     try {
       if (req.body.teacher !== req.headers.id) {
-        return res.sendStatus(400)
+        return res.sendStatus(403)
       }
       const event = await Event.create(req.body)
       return res.json(event)
@@ -39,8 +39,6 @@ class EventController {
   }
 
   public async update (req: Request, res: Response): Promise<Response> {
-    console.log(req.body.teacher)
-
     try {
       if (req.body.teacher || req.body.id || req.body._id) {
         return res.sendStatus(400)
@@ -53,9 +51,11 @@ class EventController {
         if (event.teacher.toString() !== teacher.id.toString()) {
           return res.sendStatus(403)
         } else {
-          const event = await Event.findByIdAndUpdate(req.params.id, req.body)
-          return res.json(event)
+          const newEvent = await Event.findByIdAndUpdate(req.params.id, req.body)
+          return res.json(newEvent)
         }
+      } else {
+        return res.sendStatus(400)
       }
     } catch (error) {
       return res.json(error)
