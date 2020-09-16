@@ -15,10 +15,6 @@ import SemesterRoutes from './Routes/SemesterRoutes'
 
 import AuthRoutes from './Routes/AuthRoutes'
 
-import CommentRoutes from './Routes/CommentsRoutes'
-
-import TagRoutes from './Routes/TagRoutes'
-
 const routes = Router()
 
 routes.get('/users', UserController.index)
@@ -34,8 +30,6 @@ routes.use(EventsRoutes)
 routes.use(TeacherRoutes)
 routes.use(StudentRoutes)
 routes.use(SemesterRoutes)
-routes.use(CommentRoutes)
-routes.use(TagRoutes)
 
 routes.use(AuthRoutes)
 

@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/smd-iuvi/lumi-back-end.git"
+    "url": "git+https://github.com/nowLoadingSMD/lumi-back-end.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/smd-iuvi/lumi-back-end/issues"
+    "url": "https://github.com/nowLoadingSMD/lumi-back-end/issues"
   },
-  "homepage": "https://github.com/smd-iuvi/lumi-back-end#readme",
+  "homepage": "https://github.com/nowLoadingSMD/lumi-back-end#readme",
   "devDependencies": {
     "@types/cors": "^2.8.6",
     "@types/dotenv": "^8.2.0",
