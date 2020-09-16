@@ -6,7 +6,14 @@ class StudentController {
   public async index (req: Request, res: Response): Promise<Response> {
     try {
       const students = await Student.find()
-      return res.json(students)
+      const publicStudentsInfo = students.map(student => {
+        const stud = student.toObject()
+        delete stud.favorites
+        delete stud.authID
+        delete stud.registrationNumber
+        return stud
+      })
+      return res.json(publicStudentsInfo)
     } catch (error) {
       return res.json(error)
     }
@@ -14,11 +21,15 @@ class StudentController {
 
   public async getById (req: Request, res: Response): Promise<Response> {
     try {
-      const student = await Student.findById(req.params.id)
-      student.authID = null
-      student.registrationNumber = null
+      const student = await (await Student.findById(req.params.id)).toObject()
+
+      delete student.favorites
+      delete student.authID
+      delete student.registrationNumber
+
       return res.json(student)
     } catch (error) {
+      res.statusCode = 404
       return res.json(error)
     }
   }
