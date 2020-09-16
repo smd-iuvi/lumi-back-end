@@ -15,10 +15,20 @@ class TagController {
 
   public async create (req: Request, res: Response): Promise<Response> {
     try {
-      const tag = await Tag.create(req.body)
-      return res.json(tag)
+      if (req.body.description === '' || !req.body.description) {
+        return res.sendStatus(400)
+      }
+
+      const existingTags = await Tag.findOne({ description: req.body.description })
+
+      if (existingTags !== null) {
+        return res.sendStatus(400)
+      } else {
+        const tag = await Tag.create(req.body)
+        return res.json(tag)
+      }
     } catch (error) {
-      return res.json(error)
+      return res.sendStatus(500)
     }
   }
 
