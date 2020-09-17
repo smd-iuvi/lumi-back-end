@@ -1,13 +1,12 @@
 import { Router } from 'express'
 
 import TagController from '../Controllers/TagController'
+import AuthController from '../Controllers/AuthController'
 
 const routes = Router()
 
 routes.get('/tags', TagController.index)
-routes.post('/tags', TagController.create)
-routes.put('/tags', TagController.update)
-routes.delete('/tags', TagController.delete)
+routes.post('/tags', AuthController.validateUser, TagController.create)
 
 routes.get('/tags/:id/videos', TagController.getVideos)
 

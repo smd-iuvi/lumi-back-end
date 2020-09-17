@@ -7,11 +7,15 @@ class TeacherController {
     try {
       const teachers = await Teacher.find()
 
-      return res.json(teachers.map((teacher) => {
-        teacher.siape = null
-        teacher.authID = null
-        return teacher
-      }))
+      const publicTeachersInfo = teachers.map(teacher => {
+        const teach = teacher.toObject()
+        delete teach.favorites
+        delete teach.authID
+        delete teach.siape
+        return teach
+      })
+
+      return res.json(publicTeachersInfo)
     } catch (error) {
       return res.json(error)
     }
@@ -19,9 +23,12 @@ class TeacherController {
 
   public async getById (req: Request, res: Response): Promise<Response> {
     try {
-      const teacher = await Teacher.findById(req.params.id)
-      teacher.authID = null
-      teacher.siape = null
+      const teacher = await (await Teacher.findById(req.params.id)).toObject()
+
+      delete teacher.favorites
+      delete teacher.authID
+      delete teacher.siape
+
       return res.json(teacher)
     } catch (error) {
       return res.json(error)
