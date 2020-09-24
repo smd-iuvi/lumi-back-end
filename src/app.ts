@@ -7,7 +7,7 @@ import routes from './routes'
 
 class App {
     public express: express.Application
-    private baseDir = `${__dirname}/client/build/`
+    private baseDir = 'client/build/'
 
     public constructor () {
       this.express = express()
