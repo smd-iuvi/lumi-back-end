@@ -33,7 +33,7 @@ class App {
     }
 
     private routes (): void {
-      this.express.use(routes)
+      this.express.use('/api', routes)
       this.express.get('/', (req, res) => res.sendfile('index.html', { root: this.baseDir }))
     }
 }
