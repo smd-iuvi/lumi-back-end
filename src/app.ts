@@ -7,7 +7,7 @@ import routes from './routes'
 
 class App {
     public express: express.Application
-    private baseDir = `${__dirname}/client/build/`
+    private baseDir = 'client/build/'
 
     public constructor () {
       this.express = express()
@@ -33,7 +33,7 @@ class App {
     }
 
     private routes (): void {
-      this.express.use(routes)
+      this.express.use('/api', routes)
       this.express.get('/', (req, res) => res.sendfile('index.html', { root: this.baseDir }))
     }
 }
