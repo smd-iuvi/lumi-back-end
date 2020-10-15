@@ -24,7 +24,7 @@ class App {
     }
 
     private database (): void {
-      mongoose.connect('mongodb+srv://127.0.0.1:27017/lumi-dev', {
+      mongoose.connect('mongodb+srv://127.0.0.1:27017/lumi', {
         useNewUrlParser: true,
         useUnifiedTopology: true
       })
