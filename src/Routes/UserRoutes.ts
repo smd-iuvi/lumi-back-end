@@ -5,10 +5,10 @@ import UserController from '../Controllers/UserController'
 
 const routes = Router()
 
-routes.put('/teachers/me', AuthController.validateTeacher, UserController.update)
+routes.put('/users/me', AuthController.validateUser, UserController.update)
 
-routes.get('/teachers', UserController.index)
+routes.get('/users', UserController.index)
 
-routes.get('/teachers/:id', UserController.getById)
+routes.get('/users/:id', UserController.getById)
 
 export default routes
