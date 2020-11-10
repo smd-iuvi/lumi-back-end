@@ -2,7 +2,6 @@ import { Router } from 'express'
 import AuthController from '../Controllers/AuthController'
 import GenreController from '../Controllers/GenreController'
 
-
 const routes = Router()
 
 routes.get('/genres', GenreController.index)
