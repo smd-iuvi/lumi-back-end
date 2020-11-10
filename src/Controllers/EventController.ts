@@ -5,7 +5,7 @@ import Video from '../Schemas/Video'
 import Course from '../Schemas/Course'
 import Teacher from '../Schemas/Teacher'
 
-import Roles from '../roles'
+import roles from '../roles'
 
 class EventController {
   public async index (req: Request, res: Response): Promise<Response> {
@@ -44,18 +44,14 @@ class EventController {
         return res.sendStatus(400)
       }
 
-      if (req.headers.role === Roles.teacher) {
-        const teacher = await Teacher.findById(req.headers.id)
-        const event = await Event.findOne({ _id: req.params.id })
+      const teacher = await Teacher.findById(req.headers.id)
+      const event = await Event.findOne({ _id: req.params.id })
 
-        if (event.teacher.toString() !== teacher.id.toString()) {
-          return res.sendStatus(403)
-        } else {
-          const newEvent = await Event.findByIdAndUpdate(req.params.id, req.body)
-          return res.json(newEvent)
-        }
+      if (event.teacher.toString() !== teacher.id.toString()) {
+        return res.sendStatus(403)
       } else {
-        return res.sendStatus(400)
+        const newEvent = await Event.findByIdAndUpdate(req.params.id, req.body)
+        return res.json(newEvent)
       }
     } catch (error) {
       return res.json(error)
@@ -92,10 +88,17 @@ class EventController {
   public async deleteVideo (req: Request, res: Response): Promise<Response> {
     try {
       const video = await Video.findOne({ _id: req.params.videoId })
-      video.event = null
-      await video.save()
-      const videos = await Video.find({ event: req.params.id })
-      return res.json(videos)
+      const event = await Event.findById(req.params.id)
+
+      if (event.teacher.id === req.headers.id.toString() || video.owner.id === req.headers.id.toString()) {
+        video.event = null
+        await video.save()
+        const videos = await Video.find({ event: req.params.id })
+        return res.json(videos)
+      } else {
+        return res.sendStatus(403)
+      }
+
     } catch (error) {
       return res.json(error)
     }
@@ -105,10 +108,16 @@ class EventController {
     try {
       const video = await Video.findOne({ _id: req.params.videoId })
       const event = await Event.findById(req.params.id)
-      video.event = event
-      await video.save()
-      const videos = await Video.find({ event: req.params.id })
-      return res.json(videos)
+
+      if (event.teacher.id === req.headers.id.toString() || video.owner.id === req.headers.id.toString()) {
+        video.event = event
+        await video.save()
+        const videos = await Video.find({ event: req.params.id })
+        return res.json(videos)
+      } else {
+        return res.sendStatus(403)
+      }
+
     } catch (error) {
       return res.json(error)
     }
@@ -127,9 +136,15 @@ class EventController {
     try {
       const event = await Event.findOne({ _id: req.params.id }).populate('course')
       const course = await Course.findById(req.params.coureId)
-      event.course = course
-      await event.save()
-      return res.json(event.course)
+
+      if (event.teacher.id === req.headers.id.toString()) {
+        event.course = course
+        await event.save()
+        return res.json(event.course)
+      } else {
+        return res.sendStatus(403)
+      }
+
     } catch (error) {
       return res.json(error)
     }
@@ -146,17 +161,6 @@ class EventController {
     }
   }
 
-  public async updateTeacher (req: Request, res: Response): Promise<Response> {
-    try {
-      const event = await Event.findOne({ _id: req.params.id }).populate('teacher')
-      const teacher = await Teacher.findById(req.params.teacherId)
-      event.teacher = teacher
-      await event.save()
-      return res.json(event.teacher)
-    } catch (error) {
-      return res.json(error)
-    }
-  }
 }
 
 export default new EventController()

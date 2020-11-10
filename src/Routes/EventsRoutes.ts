@@ -21,6 +21,5 @@ routes.get('/events/:id/course', EventController.getCourse)
 routes.patch('/events/:id/course/:courseId', AuthController.validateTeacher, EventController.updateCourse)
 
 routes.get('/events/:id/teacher', AuthController.validateTeacher, EventController.getTeacher)
-// routes.patch('/events/:id/teacher/:teacherId', EventController.updateTeacher)
 
 export default routes
