@@ -28,16 +28,8 @@ class CourseController {
 
   public async create (req: Request, res: Response): Promise<Response> {
     try {
-      const user = await User.findById(req.headers.id.toString())
-
-      if (user == null) {
-        return res.sendStatus(403)
-      } else if (user.role == Roles.admin) {
         const course = await Course.create(req.body)
         return res.json(course)
-      } else {
-        return res.sendStatus(403)
-      }
     } catch (error) {
       res.statusCode = 500
       return res.json(error)
