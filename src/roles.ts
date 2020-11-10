@@ -1,5 +1,6 @@
-const teacher = 'teacher'
-const user = 'user'
-const student = 'student'
-
-export default { teacher, user, student }
+export default {
+    teacher: 'teacher',
+    user: 'user',
+    student: 'student',
+    admin: 'admin'
+}

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
+import roles from '../roles'
 
 import User from '../Schemas/User'
 
@@ -47,6 +48,69 @@ class AuthController {
       const user = await User.findOne({ authID: userJWT.authID })
 
       if (user != null) {
+        req.headers.id = user.id
+        req.headers.role = user.role
+
+        next()
+      } 
+    } catch (error) {
+      return res.sendStatus(403)
+    }
+  }
+
+  public async validateAdmin(req: Request, res: Response, next: Function): Promise<Response> {
+    const authHeader = req.headers.authorization
+    const token = authHeader && authHeader.split(' ')[1]
+
+    if (token == null) return res.sendStatus(401)
+
+    try {
+      const userJWT = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) as UserJWT
+      const user = await User.findOne({ authID: userJWT.authID })
+
+      if (user != null && user.role == roles.admin) {
+        req.headers.id = user.id
+        req.headers.role = user.role
+
+        next()
+      } 
+    } catch (error) {
+      return res.sendStatus(403)
+    }
+  }
+
+  public async validateTeacher(req: Request, res: Response, next: Function): Promise<Response> {
+    const authHeader = req.headers.authorization
+    const token = authHeader && authHeader.split(' ')[1]
+
+    if (token == null) return res.sendStatus(401)
+
+    try {
+      const userJWT = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) as UserJWT
+      const user = await User.findOne({ authID: userJWT.authID })
+
+      if (user != null && user.role == roles.teacher) {
+        req.headers.id = user.id
+        req.headers.role = user.role
+
+        next()
+      } 
+    } catch (error) {
+      return res.sendStatus(403)
+    }
+  }
+
+  public async validateTeacherAndStudent(req: Request, res: Response, next: Function): Promise<Response> {
+    const authHeader = req.headers.authorization
+    const token = authHeader && authHeader.split(' ')[1]
+
+    if (token == null) return res.sendStatus(401)
+
+    try {
+      const userJWT = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) as UserJWT
+      const user = await User.findOne({ authID: userJWT.authID })
+
+      if (user != null && (user.role == roles.teacher) || (user.role == roles.student)) {
         req.headers.id = user.id
         req.headers.role = user.role
 

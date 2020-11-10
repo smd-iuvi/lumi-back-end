@@ -7,9 +7,9 @@ const routes = Router()
 
 routes.get('/courses', CourseController.index)
 
-routes.post('/courses', AuthController.validateUser, CourseController.create)
-routes.put('/courses', AuthController.validateUser, CourseController.update)
-routes.delete('/courses', AuthController.validateUser, CourseController.delete)
+routes.post('/courses', AuthController.validateAdmin, CourseController.create)
+routes.put('/courses', AuthController.validateAdmin, CourseController.update)
+routes.delete('/courses', AuthController.validateAdmin, CourseController.delete)
 
 routes.get('/courses/:id', CourseController.getCourse)
 
