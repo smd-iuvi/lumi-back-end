@@ -3,7 +3,6 @@ import { Request, Response } from 'express'
 import Event from '../Schemas/Event'
 import Video from '../Schemas/Video'
 import Course from '../Schemas/Course'
-import Teacher from '../Schemas/Teacher'
 
 import roles from '../roles'
 
@@ -44,10 +43,9 @@ class EventController {
         return res.sendStatus(400)
       }
 
-      const teacher = await Teacher.findById(req.headers.id)
       const event = await Event.findOne({ _id: req.params.id })
 
-      if (event.teacher.toString() !== teacher.id.toString()) {
+      if (event.teacher.toString() !== req.headers.id.toString()) {
         return res.sendStatus(403)
       } else {
         const newEvent = await Event.findByIdAndUpdate(req.params.id, req.body)
@@ -60,10 +58,9 @@ class EventController {
 
   public async delete (req: Request, res: Response): Promise<Response> {
     try {
-      const teacher = await Teacher.findById(req.headers.id)
       const event = await Event.findOne({ _id: req.params.id })
 
-      if (event.teacher.toString() !== teacher.id.toString()) {
+      if (event.teacher.toString() !== req.headers.id.toString()) {
         return res.sendStatus(403)
       } else {
         await Event.findOneAndDelete({ _id: req.params.id })
