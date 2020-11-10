@@ -6,11 +6,11 @@ import AuthController from '../Controllers/AuthController'
 const routes = Router()
 
 routes.get('/videos', VideoController.index)
-routes.post('/videos', AuthController.validateStudentTeacher, VideoController.create)
+routes.post('/videos', AuthController.validateUser, VideoController.create)
 
 routes.get('/videos/:id', VideoController.getById)
-routes.put('/videos/:id', AuthController.validateStudentTeacher, VideoController.update)
-routes.delete('/videos/:id', AuthController.validateStudentTeacher, VideoController.delete)
+routes.put('/videos/:id', AuthController.validateUser, VideoController.update)
+routes.delete('/videos/:id', AuthController.validateUser, VideoController.delete)
 
 // routes.get('/videos/:id/course', VideoController.getCourse)
 // routes.put('/videos/:id/course')
