@@ -6,6 +6,7 @@ import UserController from '../Controllers/UserController'
 const routes = Router()
 
 routes.put('/users/me', AuthController.validateUser, UserController.update)
+routes.get('/users/me', AuthController.validateUser, UserController.getMe)
 
 routes.get('/users', UserController.index)
 

@@ -22,6 +22,22 @@ class UserController {
     }
   }
 
+  public async getMe (req: Request, res: Response): Promise<Response> {
+    try {
+      console.log(req.headers.id)
+      const user = await (await User.findById(req.headers.id)).toObject()
+
+      delete user.favorites
+      delete user.authID
+      delete user.siape
+
+      return res.json(user)
+    } catch (error) {
+      res.statusCode = 404
+      return res.json(error)
+    }
+  }
+
   public async getById (req: Request, res: Response): Promise<Response> {
     try {
       const user = await (await User.findById(req.params.id)).toObject()
