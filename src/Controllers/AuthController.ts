@@ -25,7 +25,7 @@ class AuthController {
 
   public async register (req: Request, res: Response): Promise<Response> {
     try {
-      req.body.email = req.body.email.toLowerCase() 
+      req.body.email = req.body.email.toLowerCase()
       const user = await User.create(req.body)
       const userJWT = { authID: user.authID }
       const accessToken = jwt.sign(userJWT, process.env.ACCESS_TOKEN_SECRET)
@@ -52,13 +52,13 @@ class AuthController {
         req.headers.role = user.role
 
         next()
-      } 
+      }
     } catch (error) {
       return res.sendStatus(403)
     }
   }
 
-  public async validateAdmin(req: Request, res: Response, next: Function): Promise<Response> {
+  public async validateAdmin (req: Request, res: Response, next: Function): Promise<Response> {
     const authHeader = req.headers.authorization
     const token = authHeader && authHeader.split(' ')[1]
 
@@ -68,18 +68,18 @@ class AuthController {
       const userJWT = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) as UserJWT
       const user = await User.findOne({ authID: userJWT.authID })
 
-      if (user != null && user.role == roles.admin) {
+      if (user != null && user.role === roles.admin) {
         req.headers.id = user.id
         req.headers.role = user.role
 
         next()
-      } 
+      }
     } catch (error) {
       return res.sendStatus(403)
     }
   }
 
-  public async validateTeacher(req: Request, res: Response, next: Function): Promise<Response> {
+  public async validateTeacher (req: Request, res: Response, next: Function): Promise<Response> {
     const authHeader = req.headers.authorization
     const token = authHeader && authHeader.split(' ')[1]
 
@@ -89,18 +89,18 @@ class AuthController {
       const userJWT = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) as UserJWT
       const user = await User.findOne({ authID: userJWT.authID })
 
-      if (user != null && user.role == roles.teacher) {
+      if (user != null && user.role === roles.teacher) {
         req.headers.id = user.id
         req.headers.role = user.role
 
         next()
-      } 
+      }
     } catch (error) {
       return res.sendStatus(403)
     }
   }
 
-  public async validateTeacherAndStudent(req: Request, res: Response, next: Function): Promise<Response> {
+  public async validateTeacherAndStudent (req: Request, res: Response, next: Function): Promise<Response> {
     const authHeader = req.headers.authorization
     const token = authHeader && authHeader.split(' ')[1]
 
@@ -110,17 +110,16 @@ class AuthController {
       const userJWT = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) as UserJWT
       const user = await User.findOne({ authID: userJWT.authID })
 
-      if (user != null && (user.role == roles.teacher) || (user.role == roles.student)) {
+      if (user != null && ((user.role === roles.teacher) || (user.role === roles.student))) {
         req.headers.id = user.id
         req.headers.role = user.role
 
         next()
-      } 
+      }
     } catch (error) {
       return res.sendStatus(403)
     }
   }
-
 }
 
 export default new AuthController()

@@ -1,4 +1,6 @@
 import { Request, Response } from 'express'
+import Comment from '../Schemas/Comment'
+import Event from '../Schemas/Event'
 
 import User from '../Schemas/User'
 
@@ -65,6 +67,26 @@ class UserController {
       return res.sendStatus(403)
     }
   }
+
+  public async getComments (req: Request, res: Response): Promise<Response> {
+    try {
+      const comments = await Comment.find({ userId: req.params.id })
+      return res.json(comments)
+    } catch (error) {
+      return res.sendStatus(404)
+    }
+  }
+
+  public async getEvents (req: Request, res: Response): Promise<Response> {
+    try {
+      const comments = await Event.find({ teacher: req.params.id })
+      return res.json(comments)
+    } catch (error) {
+      return res.sendStatus(404)
+    }
+  }
+
+  // public async getEvents(re)
 }
 
 export default new UserController()

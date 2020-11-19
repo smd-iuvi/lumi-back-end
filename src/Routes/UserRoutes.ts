@@ -12,4 +12,7 @@ routes.get('/users', UserController.index)
 
 routes.get('/users/:id', UserController.getById)
 
+routes.get('/users/:id/comments', UserController.getComments)
+routes.get('/users/:id/events', UserController.getEvents)
+
 export default routes
