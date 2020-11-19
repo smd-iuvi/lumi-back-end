@@ -17,6 +17,15 @@ class CommentController {
       return res.json(error)
     }
   }
+
+  public async getByID (req: Request, res: Response): Promise<Response> {
+    try {
+      const course = await Comment.findById(req.params.id)
+      return res.json(course)
+    } catch (error) {
+      return res.sendStatus(404)
+    }
+  }
 }
 
 export default new CommentController()
