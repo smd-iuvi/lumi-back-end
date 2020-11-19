@@ -24,7 +24,9 @@ class App {
     }
 
     private database (): void {
-      mongoose.connect('mongodb://127.0.0.1:27017/lumi', {
+      // mongodb+srv://paulocardosob:FWSFZFMK9xMiYMEH@lumi-dev.2vtoi.gcp.mongodb.net/<dbname>?retryWrites=true&w=majority
+      // mongodb://127.0.0.1:27017/lumi
+      mongoose.connect('mongodb+srv://paulocardosob:FWSFZFMK9xMiYMEH@lumi-dev.2vtoi.gcp.mongodb.net/<dbname>?retryWrites=true&w=majority', {
         useNewUrlParser: true,
         useUnifiedTopology: true
       })
