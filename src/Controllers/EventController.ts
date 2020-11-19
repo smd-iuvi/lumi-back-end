@@ -174,8 +174,6 @@ class EventController {
         return res.sendStatus(404)
       }
 
-      console.log(event.teacher.toString())
-      console.log(req.headers.id.toString())
       if (event.teacher.toString() !== req.headers.id.toString()) {
         return res.sendStatus(403)
       }
