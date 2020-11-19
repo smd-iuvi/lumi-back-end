@@ -22,4 +22,6 @@ routes.patch('/events/:id/course/:courseId', AuthController.validateTeacher, Eve
 
 routes.get('/events/:id/teacher', EventController.getTeacher)
 
+routes.put('/events/:id/launch', AuthController.validateTeacher, EventController.launch)
+
 export default routes
