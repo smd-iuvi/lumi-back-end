@@ -4,7 +4,6 @@ import Event from '../Schemas/Event'
 import Video from '../Schemas/Video'
 import Course from '../Schemas/Course'
 
-import roles from '../roles'
 import User from '../Schemas/User'
 
 class EventController {
@@ -100,7 +99,6 @@ class EventController {
       } else {
         return res.sendStatus(403)
       }
-
     } catch (error) {
       return res.json(error)
     }
@@ -122,7 +120,6 @@ class EventController {
       } else {
         return res.sendStatus(403)
       }
-
     } catch (error) {
       return res.json(error)
     }
@@ -151,7 +148,6 @@ class EventController {
       } else {
         return res.sendStatus(403)
       }
-
     } catch (error) {
       return res.json(error)
     }
@@ -170,6 +166,27 @@ class EventController {
     }
   }
 
+  public async launch (req: Request, res: Response): Promise<Response> {
+    try {
+      const event = await Event.findById(req.params.id)
+
+      if (!event) {
+        return res.sendStatus(404)
+      }
+
+      console.log(event.teacher.toString())
+      console.log(req.headers.id.toString())
+      if (event.teacher.toString() !== req.headers.id.toString()) {
+        return res.sendStatus(403)
+      }
+
+      event.launched = true
+      await event.save()
+      return res.json(event)
+    } catch (err) {
+      return res.sendStatus(500)
+    }
+  }
 }
 
 export default new EventController()
