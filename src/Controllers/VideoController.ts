@@ -5,8 +5,7 @@ import Comment from '../Schemas/Comment'
 
 import Applause from '../Schemas/Applause'
 import Roles from '../roles'
-import Teacher from '../Schemas/Teacher'
-import Student from '../Schemas/Student'
+
 import User from '../Schemas/User'
 
 class VideoController {
@@ -60,27 +59,15 @@ class VideoController {
         return res.sendStatus(400)
       }
 
-      if (req.headers.role === Roles.teacher) {
-        const teacher = await Teacher.findById(req.headers.id)
-        const video = await Video.findOne({ _id: req.params.id })
+      const video = await Video.findOne({ _id: req.params.id })
 
-        if (video.owner.toString() !== teacher.id.toString()) {
-          return res.sendStatus(403)
-        } else {
-          const video = await Video.findByIdAndUpdate(req.params.id, req.body)
-          return res.json(video)
-        }
-      } else if (req.headers.role === Roles.student) {
-        const student = await Student.findById(req.headers.id)
-        const video = await Video.findOne({ _id: req.params.id })
-
-        if (video.owner.toString() !== student.id.toString()) {
-          return res.sendStatus(403)
-        } else {
-          const video = await Video.findByIdAndUpdate(req.params.id, req.body)
-          return res.json(video)
-        }
+      if (video.owner.toString() !== req.headers.id.toString()) {
+        return res.sendStatus(403)
+      } else {
+        const video = await Video.findByIdAndUpdate(req.params.id, req.body)
+        return res.json(video)
       }
+
     } catch (error) {
       res.statusCode = 404
       return res.json({ error })
@@ -89,26 +76,13 @@ class VideoController {
 
   public async delete (req: Request, res: Response): Promise<Response> {
     try {
-      if (req.headers.role === Roles.teacher) {
-        const teacher = await Teacher.findById(req.headers.id)
-        const video = await Video.findOne({ _id: req.params.id })
+      const video = await Video.findOne({ _id: req.params.id })
 
-        if (video.owner.toString() !== teacher.id.toString()) {
-          return res.sendStatus(403)
-        } else {
-          await Video.findByIdAndDelete(req.params.id)
-          return res.sendStatus(200)
-        }
-      } else if (req.headers.role === Roles.student) {
-        const student = await Student.findById(req.headers.id)
-        const video = await Video.findOne({ _id: req.params.id })
-
-        if (video.owner.toString() !== student.id.toString()) {
-          return res.sendStatus(403)
-        } else {
-          await Video.findByIdAndDelete(req.params.id)
-          return res.sendStatus(200)
-        }
+      if (video.owner.toString() !== req.headers.id.toString()) {
+        return res.sendStatus(403)
+      } else {
+        await Video.findByIdAndDelete(req.params.id)
+        return res.sendStatus(200)
       }
     } catch (error) {
       res.statusCode = 404
@@ -196,59 +170,24 @@ class VideoController {
       if (video == null) return res.sendStatus(404)
       if (req.headers.id == null) return res.sendStatus(403)
 
-      if (req.headers.role === Roles.user) {
-        const user = await User.findById(req.headers.id)
+      const user = await User.findById(req.headers.id)
 
-        const favoritesEqualToVideo = user.favorites.filter(v => {
-          return `${v}` === req.params.id
-        })
+      const favoritesEqualToVideo = user.favorites.filter(v => {
+        return `${v}` === req.params.id
+      })
 
-        if (favoritesEqualToVideo.length > 0) {
-          const newUserFavorites = await user.favorites.filter(v => `${v}` !== req.params.id)
-          user.favorites = newUserFavorites
-        } else {
-          const newUserFavorites = [...user.favorites, video]
-          user.favorites = newUserFavorites
-        }
-
-        await user.save()
-        console.log(user.favorites)
-        return res.json(user)
-      } else if (req.headers.role === Roles.teacher) {
-        const user = await Teacher.findById(req.headers.id)
-
-        const favoritesEqualToVideo = user.favorites.filter(v => {
-          return `${v}` === req.params.id
-        })
-
-        if (favoritesEqualToVideo.length > 0) {
-          const newUserFavorites = await user.favorites.filter(v => `${v}` !== req.params.id)
-          user.favorites = newUserFavorites
-        } else {
-          const newUserFavorites = [...user.favorites, video]
-          user.favorites = newUserFavorites
-        }
-
-        await user.save()
-        return res.json(user.favorites)
+      if (favoritesEqualToVideo.length > 0) {
+        const newUserFavorites = await user.favorites.filter(v => `${v}` !== req.params.id)
+        user.favorites = newUserFavorites
       } else {
-        const user = await Student.findById(req.headers.id)
-
-        const favoritesEqualToVideo = user.favorites.filter(v => {
-          return `${v}` === req.params.id
-        })
-
-        if (favoritesEqualToVideo.length > 0) {
-          const newUserFavorites = await user.favorites.filter(v => `${v}` !== req.params.id)
-          user.favorites = newUserFavorites
-        } else {
-          const newUserFavorites = [...user.favorites, video]
-          user.favorites = newUserFavorites
-        }
-
-        await user.save()
-        return res.json(user.favorites)
+        const newUserFavorites = [...user.favorites, video]
+        user.favorites = newUserFavorites
       }
+
+      await user.save()
+      console.log(user.favorites)
+      return res.json(user)
+      
     } catch (error) {
       return res.json(error)
     }

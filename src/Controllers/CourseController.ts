@@ -4,6 +4,9 @@ import Course from '../Schemas/Course'
 import Video from '../Schemas/Video'
 import Event from '../Schemas/Event'
 
+import Roles from '../roles'
+import User from '../Schemas/User'
+
 class CourseController {
   public async index (req: Request, res: Response): Promise<Response> {
     try {
@@ -25,9 +28,10 @@ class CourseController {
 
   public async create (req: Request, res: Response): Promise<Response> {
     try {
-      const course = await Course.create(req.body)
-      return res.json(course)
+        const course = await Course.create(req.body)
+        return res.json(course)
     } catch (error) {
+      res.statusCode = 500
       return res.json(error)
     }
   }
@@ -76,6 +80,7 @@ class CourseController {
       return res.json(error)
     }
   }
+
 }
 
 export default new CourseController()

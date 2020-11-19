@@ -6,11 +6,12 @@ import AuthController from '../Controllers/AuthController'
 const routes = Router()
 
 routes.get('/videos', VideoController.index)
-routes.post('/videos', AuthController.validateStudentTeacher, VideoController.create)
+routes.post('/videos', AuthController.validateTeacherAndStudent, VideoController.create)
 
 routes.get('/videos/:id', VideoController.getById)
-routes.put('/videos/:id', AuthController.validateStudentTeacher, VideoController.update)
-routes.delete('/videos/:id', AuthController.validateStudentTeacher, VideoController.delete)
+
+routes.put('/videos/:id', AuthController.validateTeacherAndStudent, VideoController.update)
+routes.delete('/videos/:id', AuthController.validateTeacherAndStudent, VideoController.delete)
 
 // routes.get('/videos/:id/course', VideoController.getCourse)
 // routes.put('/videos/:id/course')
@@ -28,6 +29,7 @@ routes.post('/videos/:id/favorite', AuthController.validateUser, VideoController
 
 routes.get('/videos/:id/comments', VideoController.getComments)
 routes.post('/videos/:id/comments', AuthController.validateUser, VideoController.pushComment)
+
 routes.patch('/videos/:id/comments/:commentId')
 routes.delete('/videos/:id/comments/:commentId')
 

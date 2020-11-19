@@ -6,7 +6,9 @@ export const UserErrorsMessages = {
   emailRequired: 'Email is required',
   firstNameRequired: 'First name is required',
   lastNameRequired: 'Last name is required',
-  authIDRequired: 'AuthID is required'
+  authIDRequired: 'AuthID is required',
+  registrationNumberRequired: 'Registration Number is required',
+  roleRequired: 'Role is required'
 }
 
 export interface UserInterface extends Document {
@@ -15,7 +17,10 @@ export interface UserInterface extends Document {
     lastName: string,
     photoUrl?: string,
     authID: string,
-    favorites?: Array<VideoInterface>
+    favorites?: Array<VideoInterface>,
+    registrationNumber?: string,
+    description?: string,
+    role: string
 }
 
 export const UserSchema = new Schema({
@@ -24,7 +29,10 @@ export const UserSchema = new Schema({
   lastName: { type: String, required: [true, UserErrorsMessages.lastNameRequired] },
   photoUrl: { type: String, required: false },
   authID: { type: String, required: [true, UserErrorsMessages.authIDRequired], unique: true },
-  favorites: [{ type: Schema.Types.ObjectId, ref: 'Video', required: false }]
+  favorites: [{ type: Schema.Types.ObjectId, ref: 'Video', required: false }],
+  registrationNumber: { type: String, required: [false, UserErrorsMessages.registrationNumberRequired] },
+  description: { type: String, required: false },
+  role:  { type: String, required: [true, UserErrorsMessages.roleRequired] }
 }, {
   timestamps: true
 })

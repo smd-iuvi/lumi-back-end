@@ -1,13 +1,15 @@
 import { Router } from 'express'
+import AuthController from '../Controllers/AuthController'
 
 import CourseController from '../Controllers/CourseController'
 
 const routes = Router()
 
 routes.get('/courses', CourseController.index)
-routes.post('/courses', CourseController.create)
-routes.put('/courses', CourseController.update)
-routes.delete('/courses', CourseController.delete)
+
+routes.post('/courses', AuthController.validateAdmin, CourseController.create)
+routes.put('/courses', AuthController.validateAdmin, CourseController.update)
+routes.delete('/courses', AuthController.validateAdmin, CourseController.delete)
 
 routes.get('/courses/:id', CourseController.getCourse)
 

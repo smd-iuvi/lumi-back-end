@@ -24,14 +24,16 @@ class App {
     }
 
     private database (): void {
-      mongoose.connect('mongodb+srv://paulocardosob:13853211@lumi-dev-2vtoi.gcp.mongodb.net/test?retryWrites=true&w=majority', {
+      // mongodb+srv://paulocardosob:FWSFZFMK9xMiYMEH@lumi-dev.2vtoi.gcp.mongodb.net/<dbname>?retryWrites=true&w=majority
+      // mongodb://127.0.0.1:27017/lumi
+      mongoose.connect('mongodb+srv://paulocardosob:FWSFZFMK9xMiYMEH@lumi-dev.2vtoi.gcp.mongodb.net/<dbname>?retryWrites=true&w=majority', {
         useNewUrlParser: true,
         useUnifiedTopology: true
       })
     }
 
     private routes (): void {
-      this.express.use(routes)
+      this.express.use('/api', routes)
     }
 }
 

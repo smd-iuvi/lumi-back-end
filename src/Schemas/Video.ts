@@ -5,11 +5,11 @@ import { CourseInterface } from './Course'
 import { SemesterInterface } from './Semester'
 import { GenreInterface } from './Genre'
 import { CommentInterface } from './Comment'
-import { StudentInterface } from './Student'
 import { EventInterface } from './Event'
+import { UserInterface } from './User'
 
 export interface VideoInterface extends Document {
-    owner: StudentInterface
+    owner: UserInterface
     title: string,
     description: string,
     duration: number,
@@ -25,7 +25,7 @@ export interface VideoInterface extends Document {
 }
 
 export const VideoSchema = new Schema({
-  owner: { type: Schema.Types.ObjectId, ref: 'Student', required: true },
+  owner: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   title: { type: String, required: true },
   description: { type: String, required: true },
   duration: { type: Number, required: true },
