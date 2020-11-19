@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import Comment from '../Schemas/Comment'
 
 import User from '../Schemas/User'
 
@@ -63,6 +64,15 @@ class UserController {
       return res.sendStatus(200)
     } catch (error) {
       return res.sendStatus(403)
+    }
+  }
+
+  public async getComments (req: Request, res: Response): Promise<Response> {
+    try {
+      const comments = await Comment.find({ userId: req.params.id })
+      return res.json(comments)
+    } catch (error) {
+      return res.sendStatus(404)
     }
   }
 }

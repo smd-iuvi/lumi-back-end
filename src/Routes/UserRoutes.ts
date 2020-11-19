@@ -12,4 +12,6 @@ routes.get('/users', UserController.index)
 
 routes.get('/users/:id', UserController.getById)
 
+routes.get('/users/:id/comments', UserController.getComments)
+
 export default routes
