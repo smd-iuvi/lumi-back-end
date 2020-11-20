@@ -56,6 +56,7 @@ class EventController {
         return res.json(newEvent)
       }
     } catch (error) {
+      res.statusCode = 500
       return res.json(error)
     }
   }
