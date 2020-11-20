@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import roles from '../roles'
 import Comment from '../Schemas/Comment'
 import Event from '../Schemas/Event'
 
@@ -7,7 +8,17 @@ import User from '../Schemas/User'
 class UserController {
   public async index (req: Request, res: Response): Promise<Response> {
     try {
-      const users = await User.find()
+      let users = []
+      console.log(req.query.role)
+      if (req.query.role) {
+        if (req.query.role === roles.admin) {
+          return res.sendStatus(403)
+        }
+
+        users = await User.find({ role: req.query.role })
+      } else {
+        users = await User.find()
+      }
 
       const publicUsersInfo = users.map(u => {
         const user = u.toObject()
