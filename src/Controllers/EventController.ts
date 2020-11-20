@@ -7,9 +7,9 @@ import Course from '../Schemas/Course'
 import User from '../Schemas/User'
 
 class EventController {
-  public async index (req: Request, res: Response): Promise<Response> {
+  public index = async (req: Request, res: Response): Promise<Response> => {
     try {
-      const events = await Event.find()
+      const events = await Event.find({ launched: req.query.launched ?? true }, null, { sort: { date: 1 } })
       return res.json(events)
     } catch (error) {
       return res.json(error)
