@@ -1,29 +1,22 @@
 import { Request, Response } from 'express'
 
-import Video from '../Schemas/Video'
+import Video, { VideoInterface } from '../Schemas/Video'
 import Comment from '../Schemas/Comment'
 
 import Applause from '../Schemas/Applause'
-import Roles from '../roles'
 
 import User from '../Schemas/User'
 
 class VideoController {
-  public async index (req: Request, res: Response): Promise<Response> {
+  public index = async (req: Request, res: Response): Promise<Response> => {
     try {
-      if (req.query.title) {
-        const videos = await Video.find()
-          .populate('genre')
-          .populate({ path: 'owner', select: 'firstName lastName photoUrl email' })
-        const filteredVideos = videos.filter(video => {
-          return video.title.toLowerCase().includes(req.query.title)
-        })
-        return res.json(filteredVideos)
+      if (req.query.title || req.query.ownerName) {
+        const videos = await this.getByQuery(req.query)
+        return res.json(videos)
       } else {
         const videos = await Video.find()
           .populate('genre')
           .populate({ path: 'owner', select: 'firstName lastName photoUrl email' })
-
         return res.json(videos)
       }
     } catch (error) {
@@ -31,7 +24,7 @@ class VideoController {
     }
   }
 
-  public async create (req: Request, res: Response): Promise<Response> {
+  public create = async (req: Request, res: Response): Promise<Response> => {
     try {
       if (req.body.owner !== req.headers.id) {
         return res.sendStatus(400)
@@ -43,7 +36,7 @@ class VideoController {
     }
   }
 
-  public async getById (req: Request, res: Response): Promise<Response> {
+  public getById = async (req: Request, res: Response): Promise<Response> => {
     try {
       const video = await Video.findOne({ _id: req.params.id })
         .populate({ path: 'owner', select: 'firstName lastName photoUrl email' })
@@ -53,7 +46,7 @@ class VideoController {
     }
   }
 
-  public async update (req: Request, res: Response): Promise<Response> {
+  public update = async (req: Request, res: Response): Promise<Response> => {
     try {
       if (req.body.owner || req.body.id || req.body._id || req.body.comments) {
         return res.sendStatus(400)
@@ -67,14 +60,13 @@ class VideoController {
         const video = await Video.findByIdAndUpdate(req.params.id, req.body)
         return res.json(video)
       }
-
     } catch (error) {
       res.statusCode = 404
       return res.json({ error })
     }
   }
 
-  public async delete (req: Request, res: Response): Promise<Response> {
+  public delete = async (req: Request, res: Response): Promise<Response> => {
     try {
       const video = await Video.findOne({ _id: req.params.id })
 
@@ -90,7 +82,7 @@ class VideoController {
     }
   }
 
-  public async getCourse (req: Request, res: Response): Promise<Response> {
+  public getCourse = async (req: Request, res: Response): Promise<Response> => {
     try {
       const video = await Video.findOne({ _id: req.params.id }).populate('course')
       return res.json(video.course || [])
@@ -99,7 +91,7 @@ class VideoController {
     }
   }
 
-  public async getGenre (req: Request, res: Response): Promise<Response> {
+  public getGenre = async (req: Request, res: Response): Promise<Response> => {
     try {
       const video = await Video.findOne({ _id: req.params.id }).populate('genre')
       return res.json(video.genre)
@@ -108,7 +100,7 @@ class VideoController {
     }
   }
 
-  public async getOwner (req: Request, res: Response): Promise<Response> {
+  public getOwner = async (req: Request, res: Response): Promise<Response> => {
     try {
       const video = await Video.findOne({ _id: req.params.id }).populate('owner')
       return res.json(video.owner)
@@ -117,7 +109,7 @@ class VideoController {
     }
   }
 
-  public async getTags (req: Request, res: Response): Promise<Response> {
+  public getTags = async (req: Request, res: Response): Promise<Response> => {
     try {
       const video = await Video.findOne({ _id: req.params.id }).populate('tags')
       return res.json(video.tags || [])
@@ -126,7 +118,7 @@ class VideoController {
     }
   }
 
-  public async getComments (req: Request, res: Response): Promise<Response> {
+  public getComments = async (req: Request, res: Response): Promise<Response> => {
     try {
       const comments = await Comment.find({ videoId: req.params.id })
       return res.json(comments)
@@ -135,7 +127,7 @@ class VideoController {
     }
   }
 
-  public async pushComment (req: Request, res: Response): Promise<Response> {
+  public pushComment = async (req: Request, res: Response): Promise<Response> => {
     try {
       const video = await Video.findOne({ _id: req.params.id })
 
@@ -163,7 +155,7 @@ class VideoController {
     }
   }
 
-  public async favoriteToggle (req: Request, res: Response): Promise<Response> {
+  public favoriteToggle = async (req: Request, res: Response): Promise<Response> => {
     try {
       const video = await Video.findById(req.params.id)
 
@@ -187,13 +179,12 @@ class VideoController {
       await user.save()
       console.log(user.favorites)
       return res.json(user)
-      
     } catch (error) {
       return res.json(error)
     }
   }
 
-  public async pushApplauses (req: Request, res: Response): Promise<Response> {
+  public pushApplauses = async (req: Request, res: Response): Promise<Response> => {
     try {
       if (req.headers.id == null) {
         return res.sendStatus(403)
@@ -227,7 +218,7 @@ class VideoController {
     }
   }
 
-  public async getApplauses (req: Request, res: Response): Promise<Response> {
+  public getApplauses = async (req: Request, res: Response): Promise<Response> => {
     try {
       const video = await Video.findOne({ _id: req.params.id })
 
@@ -248,6 +239,26 @@ class VideoController {
     } catch (error) {
       return res.json(error)
     }
+  }
+
+  private getByQuery = async (query): Promise<VideoInterface[]> => {
+    const videos = await Video.find()
+      .populate('genre')
+      .populate({ path: 'owner', select: 'firstName lastName photoUrl email' })
+
+    let filteredVideos: VideoInterface[] = videos
+
+    if (query.title) {
+      filteredVideos = filteredVideos.filter(video => video.title.toLowerCase().includes(query.title.toLowerCase()))
+    }
+
+    if (query.ownerName) {
+      filteredVideos = filteredVideos.filter(video => {
+        return video.owner.firstName.toLowerCase().includes(query.ownerName.toLowerCase())
+      })
+    }
+
+    return filteredVideos
   }
 }
 
