@@ -89,10 +89,11 @@ class EventController {
 
   public async deleteVideo (req: Request, res: Response): Promise<Response> {
     try {
+      console.log('Ola')
       const video = await Video.findOne({ _id: req.params.videoId })
       const event = await Event.findById(req.params.id)
 
-      if (event.teacher.id === req.headers.id.toString() || video.owner.id === req.headers.id.toString()) {
+      if (event.teacher.toString() === req.headers.id.toString() || video.owner.toString() === req.headers.id.toString()) {
         video.event = null
         await video.save()
         const videos = await Video.find({ event: req.params.id })
@@ -113,7 +114,7 @@ class EventController {
       console.log(event.teacher.id.toString())
       console.log(req.headers.id.toString())
 
-      if (event.teacher.toString() === req.headers.id.toString() || video.owner.id === req.headers.id.toString()) {
+      if (event.teacher.toString() === req.headers.id.toString() || video.owner.toString() === req.headers.id.toString()) {
         video.event = event
         await video.save()
         const videos = await Video.find({ event: req.params.id })

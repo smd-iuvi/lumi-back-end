@@ -52,6 +52,8 @@ class AuthController {
         req.headers.role = user.role
 
         next()
+      } else {
+        return res.sendStatus(401)
       }
     } catch (error) {
       return res.sendStatus(403)
@@ -73,6 +75,8 @@ class AuthController {
         req.headers.role = user.role
 
         next()
+      } else {
+        return res.sendStatus(401)
       }
     } catch (error) {
       return res.sendStatus(403)
@@ -94,6 +98,8 @@ class AuthController {
         req.headers.role = user.role
 
         next()
+      } else {
+        return res.sendStatus(401)
       }
     } catch (error) {
       return res.sendStatus(403)
@@ -110,11 +116,15 @@ class AuthController {
       const userJWT = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) as UserJWT
       const user = await User.findOne({ authID: userJWT.authID })
 
+      console.log(user)
+
       if (user != null && ((user.role === roles.teacher) || (user.role === roles.student))) {
         req.headers.id = user.id
         req.headers.role = user.role
 
         next()
+      } else {
+        return res.sendStatus(401)
       }
     } catch (error) {
       return res.sendStatus(403)
