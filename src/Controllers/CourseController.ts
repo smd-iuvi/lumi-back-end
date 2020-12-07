@@ -7,8 +7,15 @@ import Event from '../Schemas/Event'
 class CourseController {
   public async index (req: Request, res: Response): Promise<Response> {
     try {
-      const courses = await Course.find()
-      return res.json(courses)
+      if (req.query.name) {
+        const regex = new RegExp(req.query.name, 'i') // i for case insensitive
+
+        const courses = await Course.find({ name: { $regex: regex } })
+        return res.json(courses)
+      } else {
+        const courses = await Course.find()
+        return res.json(courses)
+      }
     } catch (error) {
       return res.json(error)
     }
