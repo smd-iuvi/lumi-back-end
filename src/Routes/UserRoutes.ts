@@ -14,5 +14,6 @@ routes.get('/users/:id', UserController.getById)
 
 routes.get('/users/:id/comments', UserController.getComments)
 routes.get('/users/:id/events', UserController.getEvents)
+routes.get('/users/:id/videos', UserController.getVideos)
 
 export default routes

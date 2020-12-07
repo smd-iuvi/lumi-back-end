@@ -4,6 +4,7 @@ import Comment from '../Schemas/Comment'
 import Event from '../Schemas/Event'
 
 import User from '../Schemas/User'
+import Video from '../Schemas/Video'
 
 class UserController {
   public async index (req: Request, res: Response): Promise<Response> {
@@ -99,6 +100,15 @@ class UserController {
     try {
       const comments = await Event.find({ teacher: req.params.id })
       return res.json(comments)
+    } catch (error) {
+      return res.sendStatus(404)
+    }
+  }
+
+  public async getVideos (req: Request, res: Response): Promise<Response> {
+    try {
+      const videos = await Video.find({ owner: req.params.id })
+      return res.json(videos)
     } catch (error) {
       return res.sendStatus(404)
     }
