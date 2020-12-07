@@ -207,7 +207,7 @@ class VideoController {
 
         return res.json(applause)
       } else {
-        applause.count += req.body.count < 50 ? req.body.count : 50
+        applause.count += applause.count < 50 ? req.body.count : 0
       }
 
       await applause.save()
