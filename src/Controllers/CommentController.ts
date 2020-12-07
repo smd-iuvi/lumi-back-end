@@ -18,6 +18,26 @@ class CommentController {
     }
   }
 
+  public async update (req: Request, res: Response): Promise<Response> {
+    try {
+      if (req.body.text === '') {
+        return res.sendStatus(400)
+      }
+
+      const comment = await Comment.findOne({ _id: req.params.id })
+
+      if (comment.userId.toString() !== req.headers.id.toString()) {
+        return res.sendStatus(403)
+      } else {
+        const newComment = await Comment.findByIdAndUpdate(req.params.id, req.body)
+        return res.json(newComment)
+      }
+    } catch (error) {
+      res.statusCode = 500
+      return res.json(error)
+    }
+  }
+
   public async getByID (req: Request, res: Response): Promise<Response> {
     try {
       const course = await Comment.findById(req.params.id)
