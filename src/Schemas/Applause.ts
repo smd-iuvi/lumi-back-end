@@ -7,8 +7,8 @@ export interface ApplauseInterface extends Document {
 }
 
 export const ApplauseSchema = new Schema({
-  userID: { type: Schema.Types.ObjectId, ref: 'User' },
-  videoID: { type: Schema.Types.ObjectId, ref: 'Video' },
+  userID: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  videoID: { type: Schema.Types.ObjectId, ref: 'Video', required: true },
   count: { type: Schema.Types.Number, required: true, default: 0 }
 }, {
   timestamps: true

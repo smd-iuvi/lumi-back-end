@@ -60,6 +60,29 @@ class AuthController {
     }
   }
 
+  public async validateUserOrByPass (req: Request, res: Response, next: Function): Promise<void> {
+    const authHeader = req.headers.authorization
+    const token = authHeader && authHeader.split(' ')[1]
+
+    if (token == null) {
+      next()
+    } else {
+      try {
+        const userJWT = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) as UserJWT
+        const user = await User.findOne({ authID: userJWT.authID })
+
+        if (user != null) {
+          req.headers.id = user.id
+          req.headers.role = user.role
+        }
+
+        next()
+      } catch (error) {
+        next()
+      }
+    }
+  }
+
   public async validateAdmin (req: Request, res: Response, next: Function): Promise<Response> {
     const authHeader = req.headers.authorization
     const token = authHeader && authHeader.split(' ')[1]
