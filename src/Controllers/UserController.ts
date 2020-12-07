@@ -9,13 +9,20 @@ class UserController {
   public async index (req: Request, res: Response): Promise<Response> {
     try {
       let users = []
-      console.log(req.query.role)
+
       if (req.query.role) {
         if (req.query.role === roles.admin) {
           return res.sendStatus(403)
         }
 
         users = await User.find({ role: req.query.role })
+      } if (req.query.name) {
+        const regex = new RegExp(req.query.name, 'i') // i for case insensitive
+
+        const firstNameMatchUsers = await User.find({ firstName: { $regex: regex } })
+        const lastNameMatchUsers = await User.find({ lastName: { $regex: regex } })
+
+        users = [...firstNameMatchUsers, ...lastNameMatchUsers]
       } else {
         users = await User.find()
       }
