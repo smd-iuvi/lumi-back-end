@@ -6,6 +6,7 @@ import Comment from '../Schemas/Comment'
 import Applause from '../Schemas/Applause'
 
 import User from '../Schemas/User'
+import View from '../Schemas/View'
 
 class VideoController {
   public index = async (req: Request, res: Response): Promise<Response> => {
@@ -234,6 +235,45 @@ class VideoController {
       applauses.forEach(applause => {
         countObject.count += applause.count
       })
+
+      return res.json(countObject)
+    } catch (error) {
+      return res.json(error)
+    }
+  }
+
+  public pushViews = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const video = await Video.findOne({ _id: req.params.id })
+
+      if (video == null) {
+        return res.sendStatus(404)
+      }
+
+      const view = await View.create({
+        userID: req.headers.id ?? null,
+        videoID: video.id
+      })
+
+      return res.json(view)
+    } catch (error) {
+      return res.json(error)
+    }
+  }
+
+  public getViews = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const video = await Video.findOne({ _id: req.params.id })
+
+      if (video == null) {
+        return res.sendStatus(404)
+      }
+
+      const view = await View.find({ videoID: req.params.id })
+
+      const countObject = {
+        views: view.length
+      }
 
       return res.json(countObject)
     } catch (error) {
