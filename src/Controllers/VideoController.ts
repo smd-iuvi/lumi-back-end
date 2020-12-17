@@ -17,6 +17,8 @@ class VideoController {
       } else {
         const videos = await Video.find()
           .populate('genre')
+          .populate('semester')
+          .populate('course')
           .populate({ path: 'owner', select: 'firstName lastName photoUrl email' })
         return res.json(videos)
       }
@@ -27,10 +29,8 @@ class VideoController {
 
   public create = async (req: Request, res: Response): Promise<Response> => {
     try {
-      if (req.body.owner !== req.headers.id) {
-        return res.sendStatus(400)
-      }
-      const video = await Video.create(req.body)
+      const videoToCreate = {...req.body, createdBy: req.headers.id}
+      const video = await Video.create(videoToCreate)
       return res.json(video)
     } catch (error) {
       return res.json(error)
@@ -40,8 +40,17 @@ class VideoController {
   public getById = async (req: Request, res: Response): Promise<Response> => {
     try {
       const video = await Video.findOne({ _id: req.params.id })
+        .populate('genre')
+        .populate('semester')
+        .populate('course')
         .populate({ path: 'owner', select: 'firstName lastName photoUrl email' })
-      return res.json(video)
+
+      const applauses = await Applause.find({ videoID: video.id })
+      const views = await View.find({ videoID: video.id})
+
+      const v = {...video._doc}
+
+      return res.json({...v, claps: applauses.length, views: views.length})
     } catch (error) {
       return res.json(error)
     }
@@ -55,7 +64,7 @@ class VideoController {
 
       const video = await Video.findOne({ _id: req.params.id })
 
-      if (video.owner.toString() !== req.headers.id.toString()) {
+      if (video.createdBy.toString() !== req.headers.id.toString()) {
         return res.sendStatus(403)
       } else {
         const video = await Video.findByIdAndUpdate(req.params.id, req.body)
@@ -71,7 +80,7 @@ class VideoController {
     try {
       const video = await Video.findOne({ _id: req.params.id })
 
-      if (video.owner.toString() !== req.headers.id.toString()) {
+      if (video.createdBy.toString() !== req.headers.id.toString()) {
         return res.sendStatus(403)
       } else {
         await Video.findByIdAndDelete(req.params.id)
@@ -104,7 +113,7 @@ class VideoController {
   public getOwner = async (req: Request, res: Response): Promise<Response> => {
     try {
       const video = await Video.findOne({ _id: req.params.id }).populate('owner')
-      return res.json(video.owner)
+      return res.json(video.createdBy)
     } catch (error) {
       return res.json(error)
     }
@@ -294,7 +303,7 @@ class VideoController {
 
     if (query.ownerName) {
       filteredVideos = filteredVideos.filter(video => {
-        return video.owner.firstName.toLowerCase().includes(query.ownerName.toLowerCase())
+        return video.createdBy.firstName.toLowerCase().includes(query.ownerName.toLowerCase())
       })
     }
 
