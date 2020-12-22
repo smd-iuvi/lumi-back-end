@@ -36,4 +36,7 @@ routes.delete('/videos/:id/comments/:commentId')
 routes.post('/videos/:id/applauses', AuthController.validateUser, VideoController.pushApplauses)
 routes.get('/videos/:id/applauses', VideoController.getApplauses)
 
+routes.post('/videos/:id/views', AuthController.validateUserOrByPass, VideoController.pushViews)
+routes.get('/videos/:id/views', VideoController.getViews)
+
 export default routes

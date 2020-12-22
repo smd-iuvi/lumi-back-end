@@ -1,13 +1,32 @@
 import { Request, Response } from 'express'
+import roles from '../roles'
 import Comment from '../Schemas/Comment'
 import Event from '../Schemas/Event'
 
 import User from '../Schemas/User'
+import Video from '../Schemas/Video'
 
 class UserController {
   public async index (req: Request, res: Response): Promise<Response> {
     try {
-      const users = await User.find()
+      let users = []
+
+      if (req.query.role) {
+        if (req.query.role === roles.admin) {
+          return res.sendStatus(403)
+        }
+
+        users = await User.find({ role: req.query.role })
+      } if (req.query.name) {
+        const regex = new RegExp(req.query.name, 'i') // i for case insensitive
+
+        const firstNameMatchUsers = await User.find({ firstName: { $regex: regex } })
+        const lastNameMatchUsers = await User.find({ lastName: { $regex: regex } })
+
+        users = [...firstNameMatchUsers, ...lastNameMatchUsers]
+      } else {
+        users = await User.find()
+      }
 
       const publicUsersInfo = users.map(u => {
         const user = u.toObject()
@@ -81,6 +100,15 @@ class UserController {
     try {
       const comments = await Event.find({ teacher: req.params.id })
       return res.json(comments)
+    } catch (error) {
+      return res.sendStatus(404)
+    }
+  }
+
+  public async getVideos (req: Request, res: Response): Promise<Response> {
+    try {
+      const videos = await Video.find({ createdBy: req.params.id })
+      return res.json(videos)
     } catch (error) {
       return res.sendStatus(404)
     }

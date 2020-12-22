@@ -7,7 +7,7 @@ const routes = Router()
 
 routes.get('/semesters', SemesterController.index)
 
-routes.post('/semesters', AuthController.validateAdmin, SemesterController.create)
+routes.post('/semesters', SemesterController.create)
 routes.put('/semesters', AuthController.validateAdmin, SemesterController.update)
 routes.delete('/semesters', AuthController.validateAdmin, SemesterController.delete)
 

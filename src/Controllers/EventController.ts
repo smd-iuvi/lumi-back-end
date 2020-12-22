@@ -4,13 +4,12 @@ import Event from '../Schemas/Event'
 import Video from '../Schemas/Video'
 import Course from '../Schemas/Course'
 
-import roles from '../roles'
 import User from '../Schemas/User'
 
 class EventController {
-  public async index (req: Request, res: Response): Promise<Response> {
+  public index = async (req: Request, res: Response): Promise<Response> => {
     try {
-      const events = await Event.find()
+      const events = await Event.find({ launched: req.query.launched ?? true }, null, { sort: { date: 1 } })
       return res.json(events)
     } catch (error) {
       return res.json(error)
@@ -57,6 +56,7 @@ class EventController {
         return res.json(newEvent)
       }
     } catch (error) {
+      res.statusCode = 500
       return res.json(error)
     }
   }
@@ -89,10 +89,11 @@ class EventController {
 
   public async deleteVideo (req: Request, res: Response): Promise<Response> {
     try {
+      console.log('Ola')
       const video = await Video.findOne({ _id: req.params.videoId })
       const event = await Event.findById(req.params.id)
 
-      if (event.teacher.id === req.headers.id.toString() || video.owner.id === req.headers.id.toString()) {
+      if (event.teacher.toString() === req.headers.id.toString() || video.owner.toString() === req.headers.id.toString()) {
         video.event = null
         await video.save()
         const videos = await Video.find({ event: req.params.id })
@@ -100,7 +101,6 @@ class EventController {
       } else {
         return res.sendStatus(403)
       }
-
     } catch (error) {
       return res.json(error)
     }
@@ -114,7 +114,7 @@ class EventController {
       console.log(event.teacher.id.toString())
       console.log(req.headers.id.toString())
 
-      if (event.teacher.toString() === req.headers.id.toString() || video.owner.id === req.headers.id.toString()) {
+      if (event.teacher.toString() === req.headers.id.toString() || video.owner.toString() === req.headers.id.toString()) {
         video.event = event
         await video.save()
         const videos = await Video.find({ event: req.params.id })
@@ -122,7 +122,6 @@ class EventController {
       } else {
         return res.sendStatus(403)
       }
-
     } catch (error) {
       return res.json(error)
     }
@@ -151,7 +150,6 @@ class EventController {
       } else {
         return res.sendStatus(403)
       }
-
     } catch (error) {
       return res.json(error)
     }
@@ -170,6 +168,25 @@ class EventController {
     }
   }
 
+  public async launch (req: Request, res: Response): Promise<Response> {
+    try {
+      const event = await Event.findById(req.params.id)
+
+      if (!event) {
+        return res.sendStatus(404)
+      }
+
+      if (event.teacher.toString() !== req.headers.id.toString()) {
+        return res.sendStatus(403)
+      }
+
+      event.launched = true
+      await event.save()
+      return res.json(event)
+    } catch (err) {
+      return res.sendStatus(500)
+    }
+  }
 }
 
 export default new EventController()

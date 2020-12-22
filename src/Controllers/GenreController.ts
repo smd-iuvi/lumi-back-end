@@ -45,6 +45,7 @@ class GenreController {
       const videos = await Video.find({ genre: req.params.id })
       return res.json(videos)
     } catch (error) {
+      res.statusCode = 404
       return res.json(error)
     }
   }
