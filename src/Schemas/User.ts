@@ -18,7 +18,6 @@ export interface UserInterface extends Document {
     photoUrl?: string,
     authID: string,
     favorites?: Array<VideoInterface>,
-    registrationNumber?: string,
     description?: string,
     role: string
 }
@@ -30,7 +29,6 @@ export const UserSchema = new Schema({
   photoUrl: { type: String, required: false },
   authID: { type: String, required: [true, UserErrorsMessages.authIDRequired], unique: true },
   favorites: [{ type: Schema.Types.ObjectId, ref: 'Video', required: false }],
-  registrationNumber: { type: String, required: [false, UserErrorsMessages.registrationNumberRequired] },
   description: { type: String, required: false },
   role:  { type: String, required: [true, UserErrorsMessages.roleRequired] }
 }, {
