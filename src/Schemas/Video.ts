@@ -12,7 +12,6 @@ export interface VideoInterface extends Document {
     createdBy: UserInterface
     title: string,
     description: string,
-    duration: number,
     url: string,
     platform: string,
     tags?: Array<TagInterface>,
@@ -37,7 +36,6 @@ export const VideoSchema = new Schema({
   createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   title: { type: String, required: true },
   description: { type: String, required: true },
-  duration: { type: Number, required: true },
   url: { type: String, required: true },
   tags: [{ type: Schema.Types.ObjectId, ref: 'Tag', required: false }],
   course: { type: Schema.Types.ObjectId, ref: 'Course', required: false },

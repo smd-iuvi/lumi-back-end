@@ -20,6 +20,8 @@ class VideoController {
           .populate('semester')
           .populate('course')
           .populate({ path: 'owner', select: 'firstName lastName photoUrl email' })
+
+        console.log(videos)
         return res.json(videos)
       }
     } catch (error) {
@@ -29,10 +31,14 @@ class VideoController {
 
   public create = async (req: Request, res: Response): Promise<Response> => {
     try {
+      console.log(req.body)
       const videoToCreate = {...req.body, createdBy: req.headers.id}
       const video = await Video.create(videoToCreate)
+      console.log(video)
       return res.json(video)
     } catch (error) {
+      res.statusCode = 500
+      console.log(error)
       return res.json(error)
     }
   }
@@ -107,6 +113,17 @@ class VideoController {
       return res.json(video.genre)
     } catch (error) {
       return res.json(error)
+    }
+  }
+
+    public async getWatchlist (req: Request, res: Response): Promise<Response> {
+    try {
+      console.log(req.headers.id)
+      const user = await User.findById(req.headers.id).populate('favorites')
+      console.log(user)
+      return res.json(user.favorites)
+    } catch (error) {
+      return res.sendStatus(404)
     }
   }
 

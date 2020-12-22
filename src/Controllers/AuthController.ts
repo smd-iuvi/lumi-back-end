@@ -30,6 +30,7 @@ class AuthController {
       const userJWT = { authID: user.authID }
       const accessToken = jwt.sign(userJWT, process.env.ACCESS_TOKEN_SECRET)
       user.authID = null
+      console.log(accessToken)
       return res.json({ user, accessToken })
     } catch (error) {
       res.statusCode = 400
@@ -139,9 +140,7 @@ class AuthController {
       const userJWT = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) as UserJWT
       const user = await User.findOne({ authID: userJWT.authID })
 
-      console.log(user)
-
-      if (user != null && ((user.role === roles.teacher) || (user.role === roles.student))) {
+      if (user != null && ((user.role.toLowerCase() === roles.teacher.toLowerCase()) || (user.role.toLowerCase() === roles.student.toLowerCase()))) {
         req.headers.id = user.id
         req.headers.role = user.role
 

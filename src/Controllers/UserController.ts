@@ -107,7 +107,7 @@ class UserController {
 
   public async getVideos (req: Request, res: Response): Promise<Response> {
     try {
-      const videos = await Video.find({ owner: req.params.id })
+      const videos = await Video.find({ createdBy: req.params.id })
       return res.json(videos)
     } catch (error) {
       return res.sendStatus(404)
